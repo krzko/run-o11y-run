@@ -1,6 +1,6 @@
 # run-o11y-run
 
-A single-binary 🌯 wrapper around `docker compose` with embedded configurations to effortlessly run your local observability stack
+A single-binary 🌯 wrapper around `docker compose` with embedded configurations to effortlessly run your local observability stack.
 
 ## Prerequisites
 
@@ -24,14 +24,33 @@ A single-binary 🌯 wrapper around `docker compose` with embedded configuration
 ## Commands
 
 ```sh
-# basic
-run-o11y-run
+# start
+$ run-o11y-run
+
+[+] Running 3/24
+ ⠿ prometheus Pulled                                                                                                                                           78.5s
+   ⠹ 3760d0bcb02f Download complete                                                                                                                            75.1s
+   ⠇ 6c79eaae9b9d Download complete                                                                                                                            67.7s
+   ⠼ cd1927291d25 Download complete                                                                                                                            67.3s
+ ⠿ grafana Pulled                                                                                                                                               3.3s
+   ⠸ 76dcf36e7d2a Exists                                                                                                                                       75.2s
+   ⠹ 35449a2b1546 Exists                                                                                                                                       75.2s
+   ⠹ 216f8a5c1abe Exists                                                                                                                                       75.2s
+ ⠿ otel-collector Pulled                                                                                                                                        3.3s
+   ⠸ 8476389c268a Exists                                                                                                                                       75.2s
 
 # clean
 run-o11y-run -clean
+
+[+] Running 5/4
+ ⠿ Container stack-prometheus-1      Removed                                                                                                                    0.1s
+ ⠿ Container stack-grafana-1         Removed                                                                                                                    0.1s
+ ⠿ Container stack-tempo-1           Removed                                                                                                                    0.1s
+ ⠿ Container stack-otel-collector-1  Removed                                                                                                                    0.1s
+ ⠿ Network stack_default             Removed                                                                                                                    0.0s
 ```
 
-## Links
+## Local Links
 
 * [Grafana Tempo](http://localhost:3000/explore?orgId=1&left=%7B%22datasource%22:%22tempo%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22datasource%22:%7B%22type%22:%22tempo%22,%22uid%22:%22tempo%22%7D%7D%5D,%22range%22:%7B%22from%22:%22now-1h%22,%22to%22:%22now%22%7D%7D)
 * [Grafana Prometheus](http://localhost:3000/explore?orgId=1&left=%7B%22datasource%22:%22prometheus%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22datasource%22:%7B%22type%22:%22prometheus%22,%22uid%22:%22prometheus%22%7D%7D%5D,%22range%22:%7B%22from%22:%22now-1h%22,%22to%22:%22now%22%7D%7D)
