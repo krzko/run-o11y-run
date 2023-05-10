@@ -1,0 +1,54 @@
+# .goreleaser.yml
+before:
+  hooks:
+    - go mod tidy
+    - go generate ./...
+
+builds:
+  - main: main.go
+    binary: run-o11y-run
+    env: [CGO_ENABLED=0]
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w -X main.version={{.Version}} -X main.commit={{.ShortCommit}} -X main.date={{.CommitDate}}
+    mod_timestamp: '{{ .CommitTimestamp }}'
+
+archives:
+  - name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
+    format_overrides:
+    - goos: windows
+      format: zip
+    wrap_in_directory: true
+
+checksum:
+  name_template: checksums.txt
+
+snapshot:
+  name_template: "{{ incpatch .Version }}-next"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+    - '^docs:'
+    - '^test:'
+    - Merge pull request
+    - Merge branch
+
+brews:
+  - name: run-o11y-run
+    tap:
+      owner: 'krzko'
+      name: 'homebrew-tap'
+    homepage: https://github.com/krzko/run-o11y-run
+    description: "A single-binary 🌯 wrapper around `docker compose` with embedded configurations to effortlessly run your local observability stack"
+    install: |
+      bin.install "run-o11y-run"
+    test: |
+      system "#{bin}/run-o11y-run -v"
