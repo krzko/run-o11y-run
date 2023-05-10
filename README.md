@@ -8,8 +8,22 @@ A single-binary 🌯 wrapper around `docker compose` with embedded configuration
 
 ## Quick Start
 
-* Download the archive from [releases](https://github.service.anz/kowalskk/run-o11y-run/releases).
-* Extract the archive
+### Install
+
+#### brew
+
+Install [brew](https://brew.sh/) and then run:
+
+```sh
+brew install krzko/tap/run-o11y-run
+```
+
+#### Download Binary
+
+Download the latest version from the [Releases](https://github.com/krzko/run-o11y-run/releases) page.
+
+### Run
+
 * Run `run-o11y-run`
     * **NOTE:** If you encounter the error "run-o11y-run" can't be opened because Apple cannot check it for malicious software:
     * Visit https://support.apple.com/en-au/guide/mac-help/mh40616/mac for guidance.
