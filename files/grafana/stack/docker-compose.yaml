@@ -10,6 +10,7 @@ services:
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
       - GF_AUTH_DISABLE_LOGIN_FORM=true
       - GF_FEATURE_TOGGLES_ENABLE=traceqlEditor
+      - NO_PROXY=grafana,prometheus,tempo
     ports:
       - "3000:3000"
 
@@ -29,6 +30,8 @@ services:
     ports:
       - "4317:4317"   # otlp grpc
       - "4318:4318"   # otlp http
+    environment:
+      - NO_PROXY=grafana,prometheus,tempo
 
   prometheus:
     image: prom/prometheus:v2.43.1
@@ -40,6 +43,8 @@ services:
       - ../shared/prometheus.yaml:/etc/prometheus.yaml
     ports:
       - "9090:9090"
+    environment:
+      - NO_PROXY=grafana,prometheus,tempo
 
   tempo:
     image: grafana/tempo:latest
@@ -52,3 +57,5 @@ services:
       - "3200:3200"   # tempo
       - "9095:9095"   # tempo grpc
       - "9411:9411"   # zipkin
+    environment:
+      - NO_PROXY=grafana,prometheus,tempo
