@@ -5,7 +5,7 @@ before:
     - go generate ./...
 
 builds:
-  - main: main.go
+  - main: ./cmd/run-o11y-run
     binary: run-o11y-run
     env: [CGO_ENABLED=0]
     goos:

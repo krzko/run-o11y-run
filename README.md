@@ -39,7 +39,7 @@ Download the latest version from the [Releases](https://github.com/krzko/run-o11
 
 `run-o11y-run` is a command-line tool with three simple commands: `start`, `stop`, and `clean`.
 
-- `start`: Starts run-o11y-run containers. You can use the `--registry` flag to specify a Docker Registry. By default, it uses Docker Hub.
+- `start`: Starts run-o11y-run containers. You can use the `--registry` flag to specify a Docker Registry. By default, it uses Docker Hub, but if you wish to specifcy your own, use this example
   Example: `run-o11y-run start --registry <registry-url>`
 
 - `stop`: Stops run-o11y-run containers.
