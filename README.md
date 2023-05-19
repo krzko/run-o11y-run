@@ -37,9 +37,22 @@ Download the latest version from the [Releases](https://github.com/krzko/run-o11
 
 ## Commands
 
+`run-o11y-run` is a command-line tool with three simple commands: `start`, `stop`, and `clean`.
+
+- `start`: Starts run-o11y-run containers. You can use the `--registry` flag to specify a Docker Registry. By default, it uses Docker Hub.
+  Example: `run-o11y-run start --registry <registry-url>`
+
+- `stop`: Stops run-o11y-run containers.
+  Example: `run-o11y-run stop`
+
+- `clean`: Stops and removes run-o11y-run containers, files, and networks.
+  Example: `run-o11y-run clean`
+
+### Examples
+
 ```sh
 # start
-$ run-o11y-run
+$ run-o11y-run start
 
 [+] Running 3/24
  ⠿ prometheus Pulled                                                                                                                                           78.5s
@@ -54,7 +67,7 @@ $ run-o11y-run
    ⠸ 8476389c268a Exists                                                                                                                                       75.2s
 
 # clean
-run-o11y-run -clean
+run-o11y-run clean
 
 [+] Running 5/4
  ⠿ Container stack-prometheus-1      Removed                                                                                                                    0.1s

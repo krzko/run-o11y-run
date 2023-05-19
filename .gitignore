@@ -1,8 +1,9 @@
 ### Custom ###
 
 bin/
-run-o11y-run
-run_o11y_run_files
+/run-o11y-run
+/run_o11y_run_files
+/run-o11y-run-legacy
 
 # Created by https://www.toptal.com/developers/gitignore/api/macos,windows,linux,visualstudiocode,go,intellij+all
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,windows,linux,visualstudiocode,go,intellij+all
