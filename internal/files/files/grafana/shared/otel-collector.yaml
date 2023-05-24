@@ -39,7 +39,7 @@ exporters:
 service:
   pipelines:
     logs:
-      receivers: [filelog, syslog]
+      receivers: [filelog, otlp, syslog]
       processors: [batch]
       exporters: [loki]
     metrics:
