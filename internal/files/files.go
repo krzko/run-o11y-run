@@ -10,6 +10,7 @@ import (
 //go:embed files/*
 var files embed.FS
 
+// ExtractFiles extracts the files from the embedded filesystem to the target directory
 func ExtractFiles(targetDir string) error {
 	err := os.MkdirAll(targetDir, os.ModePerm)
 	if err != nil {

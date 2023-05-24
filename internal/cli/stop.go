@@ -9,13 +9,14 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+// genStopCommand generates the stop command
 func genStopCommand() *cli.Command {
 	return &cli.Command{
 		Name:    "stop",
 		Usage:   "Stop run-o11y-run containers",
 		Aliases: []string{"t"},
 		Action: func(c *cli.Context) error {
-			fmt.Println("🏁 Stopping...")
+			fmt.Printf("🏁 Stopping...\n\n")
 
 			if !checkDockerAvailability() {
 				fmt.Println("Docker command not found. Please make sure Docker is installed and available in your PATH.")
@@ -37,7 +38,7 @@ func genStopCommand() *cli.Command {
 
 			// os.Exit(0)
 
-			fmt.Println("🏁 Stopped...")
+			fmt.Printf("\n🏁 Stopped\n\n")
 			return nil
 		},
 	}

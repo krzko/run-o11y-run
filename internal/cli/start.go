@@ -10,6 +10,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+// genStartCommand generates the start command
 func genStartCommand() *cli.Command {
 	return &cli.Command{
 		Name:    "start",
@@ -59,6 +60,7 @@ func genStartCommand() *cli.Command {
 	}
 }
 
+// addRegistryPrefix adds the registry prefix to the image field of the Docker Compose file
 func addRegistryPrefix(filePath, registry string) error {
 	// Read the Docker Compose file
 	data, err := os.ReadFile(filePath)
@@ -73,14 +75,16 @@ func addRegistryPrefix(filePath, registry string) error {
 		return fmt.Errorf("failed to unmarshal Docker Compose YAML: %w", err)
 	}
 
-	// Modify the image field with the registry prefix
+	// Modify the image field with the registry prefix for all services
 	services, ok := composeMap["services"].(map[interface{}]interface{})
 	if ok {
-		grafana, ok := services["grafana"].(map[interface{}]interface{})
-		if ok {
-			image, ok := grafana["image"].(string)
+		for _, service := range services {
+			serviceMap, ok := service.(map[interface{}]interface{})
 			if ok {
-				grafana["image"] = fmt.Sprintf("%s/%s", registry, image)
+				image, ok := serviceMap["image"].(string)
+				if ok {
+					serviceMap["image"] = fmt.Sprintf("%s/%s", registry, image)
+				}
 			}
 		}
 	}

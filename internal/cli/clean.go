@@ -9,6 +9,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+// genCleanCommand generates the clean command
 func genCleanCommand() *cli.Command {
 	return &cli.Command{
 		Name:    "clean",
@@ -22,7 +23,7 @@ func genCleanCommand() *cli.Command {
 			},
 		},
 		Action: func(c *cli.Context) error {
-			fmt.Println("🧹 Cleaning...")
+			fmt.Printf("🧹 Cleaning...\n\n")
 
 			if !checkDockerAvailability() {
 				fmt.Println("Docker command not found. Please make sure Docker is installed and available in your PATH.")
@@ -56,7 +57,7 @@ func genCleanCommand() *cli.Command {
 				return err
 			}
 
-			fmt.Println("🧹 Cleaned")
+			fmt.Printf("\n🧹 Cleaned\n\n")
 			return nil
 		},
 	}

@@ -1,4 +1,5 @@
-version: "3"
+version: "3.8"
+
 services:
 
   grafana:
@@ -10,20 +11,71 @@ services:
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
       - GF_AUTH_DISABLE_LOGIN_FORM=true
       - GF_FEATURE_TOGGLES_ENABLE=traceqlEditor
-      - NO_PROXY=grafana,prometheus,tempo
+      - NO_PROXY=grafana,loki,minio,ote-collector,prometheus,tempo
     ports:
       - "3000:3000"
+
+  loki:
+    image: grafana/loki:2.8.2
+    command: "-config.file=/etc/loki/local-config.yaml"
+    environment:
+      - NO_PROXY=grafana,loki,minio,ote-collector,prometheus,tempo
+    ports:
+      - "3100:3100"
+      - 7946
+      - 9095
+    volumes:
+      - ../shared/loki.yaml:/etc/loki/local-config.yaml
+    depends_on:
+      - minio
+    healthcheck:
+      test: [ "CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3100/ready || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  minio:
+    image: minio/minio:RELEASE.2023-05-18T00-05-36Z
+    entrypoint:
+      - sh
+      - -euc
+      - |
+        mkdir -p /data/loki-data && \
+        mkdir -p /data/loki-ruler && \
+        minio server /data
+    environment:
+      - MINIO_ROOT_USER=loki
+      - MINIO_ROOT_PASSWORD=supersecret
+      - MINIO_PROMETHEUS_AUTH_TYPE=public
+      - MINIO_UPDATE=off
+      - NO_PROXY=grafana,loki,minio,ote-collector,prometheus,tempo
+    ports:
+      - 9000
+    volumes:
+      - ./minio-data:/data
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+      interval: 15s
+      timeout: 20s
+      retries: 5
 
   otel-collector:
     image: otel/opentelemetry-collector-contrib:0.75.0
     command: [ "--config=/etc/otel-collector.yaml" ]
     volumes:
       - ../shared/otel-collector.yaml:/etc/otel-collector.yaml
+      - /var/log:/var/log
+      - "../../../../:/app:r"
     ports:
       - "4317:4317"   # otlp grpc
       - "4318:4318"   # otlp http
+      - "8094:8094"   # syslog
     environment:
-      - NO_PROXY=grafana,prometheus,tempo
+      - NO_PROXY=grafana,loki,minio,ote-collector,prometheus,tempo
+    depends_on:
+      - loki
+      - prometheus
+      - tempo
 
   prometheus:
     image: prom/prometheus:v2.43.1
@@ -36,10 +88,10 @@ services:
     ports:
       - "9090:9090"
     environment:
-      - NO_PROXY=grafana,prometheus,tempo
+      - NO_PROXY=grafana,loki,minio,ote-collector,prometheus,tempo
 
   tempo:
-    image: grafana/tempo:latest
+    image: grafana/tempo:main-5e0870a
     command: [ "-config.file=/etc/tempo.yaml" ]
     volumes:
       - ../shared/tempo.yaml:/etc/tempo.yaml
@@ -50,4 +102,4 @@ services:
       - "9095:9095"   # tempo grpc
       - "9411:9411"   # zipkin
     environment:
-      - NO_PROXY=grafana,prometheus,tempo
+      - NO_PROXY=grafana,loki,minio,ote-collector,prometheus,tempo
