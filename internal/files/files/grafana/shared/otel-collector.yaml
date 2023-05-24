@@ -1,10 +1,32 @@
 receivers:
+  filelog:
+    include:
+      - /app/*.log
+      - /var/log/*.log
+    include_file_name: true
+    include_file_path: true
   otlp:
     protocols:
       grpc:
       http:
+  syslog:
+    tcp:
+      listen_address: "0.0.0.0:8094"
+    protocol: rfc3164
+    location: UTC
+    operators:
+      - type: move
+        from: attributes.message
+        to: body
+
+processors:
+  batch:
 
 exporters:
+  loki:
+    endpoint: http://loki:3100/loki/api/v1/push
+    tls:
+      insecure: true
   prometheusremotewrite:
     endpoint: http://prometheus:9090/api/v1/write
     tls:
@@ -16,6 +38,10 @@ exporters:
 
 service:
   pipelines:
+    logs:
+      receivers: [filelog, syslog]
+      processors: [batch]
+      exporters: [loki]
     metrics:
       receivers: [otlp]
       exporters: [prometheusremotewrite]

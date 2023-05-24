@@ -64,15 +64,18 @@ func New(version, commit, date string) *cli.App {
 	return app
 }
 
+// checkDockerAvailability checks if Docker is available in the PATH
 func checkDockerAvailability() bool {
 	_, err := exec.LookPath("docker")
 	return err == nil
 }
 
+// removeDirectory removes a directory and all its contents
 func removeDirectory(dir string) error {
 	return os.RemoveAll(dir)
 }
 
+// runDockerCompose runs a docker compose command
 func runDockerCompose(dir string, subcommand string, flag string) error {
 	args := []string{"compose", subcommand}
 	if flag != "" {

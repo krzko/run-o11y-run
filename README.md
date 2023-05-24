@@ -1,10 +1,28 @@
 # run-o11y-run
 
+```sh
+_____ _____ _____     _____ ___   ___   __ __     _____ _____ _____
+| __  |  |  |   | |___|     |_  | |_  | |  |  |___| __  |  |  |   | |
+|    -|  |  | | | |___|  |  |_| |_ _| |_|_   _|___|    -|  |  | | | |
+|__|__|_____|_|___|   |_____|_____|_____| |_|     |__|__|_____|_|___|
+
+```
+
 A single-binary 🌯 wrapper around `docker compose` with embedded configurations to effortlessly run your local observability stack.
+
+The underlying observability stack is built on [Grafana](https://grafana.com/) products and [OpenTelemetry](https://opentelemetry.io/). It includes the following services:
+
+* [Grafana](https://grafana.com/oss/grafana/)
+* [Grafana Loki](https://grafana.com/oss/loki/)
+* [Grafana Tempo](https://grafana.com/oss/tempo/)
+* [MinIO](https://min.io/)
+* [OpenTelemetry Collector](https://opentelemetry.io/docs/collector/)
+* [Prometheus](https://grafana.com/oss/prometheus/)
+
 
 ## Prerequisites
 
-`run-o11y-run` depends on the latest version of `docker`, which includes the `docker compose` command.
+`run-o11y-run` depends on the latest version of [Docker Desktop](https://www.docker.com/products/docker-desktop/), which includes the `docker compose` command.
 
 ## Quick Start
 
@@ -25,17 +43,30 @@ Download the latest version from the [Releases](https://github.com/krzko/run-o11
 ### Run
 
 * Run `run-o11y-run`
-    * **NOTE:** If you encounter the error "run-o11y-run" can't be opened because Apple cannot check it for malicious software:
-    * Visit https://support.apple.com/en-au/guide/mac-help/mh40616/mac for guidance.
-    * **TODO:** The app will be notarised in future updates.
-* Configure your service to push data to one of the following endpoints. This can be done by setting the `OTEL_EXPORTER_OTLP_ENDPOINT` environment variable or updating your config file. Make sure to set the traffic to **insecure**:
+* Configure your service to push telemetry data to one of the following endpoints. This can be done by setting the `OTEL_EXPORTER_OTLP_ENDPOINT` environment variable or updating your config file. Make sure to set the traffic to **insecure**:
     * OTLP (grpc): http://localhost:4317
     * OTLP (http): http://localhost:4318
     * Jaeger: http://localhost:14268
     * Zipkin: http://localhost:9411
+* Logs are procedd via two means:
+  * Tailed from `/var/log/*.log` and `$(PWD)/*.log` on your local machine.
+  * A Syslog RFC 3164 header format, `syslog` receiver operates on `localhost:8094`
 * To exit gracefully, press `CTRL+C`.
 
 ## Commands
+
+```sh
+$ run-o11y-run start
+
+✨ Starting...
+[+] Running 56/39
+ ✔ tempo 5 layers [⣿⣿⣿⣿⣿]      0B/0B      Pulled                                                                                                           142.9s
+ ⠦ minio 9 layers [⣿⣿⣿⣿⣿⣄⣿⣿⣿] 48.23MB/96.92MB Pulling                                                                                                      170.6s
+ ⠦ otel-collector 6 layers [⣿⣿⣿⣿⣿⣷] 45.09MB/48.15MB Pulling                                                                                                170.6s
+ ⠦ grafana 12 layers [⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]      0B/0B      Pulling                                                                                                170.6s
+ ⠦ prometheus 15 layers [⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]      0B/0B      Pulling                                                                                          170.6s
+ ✔ loki 9 layers [⣿⣿⣿⣿⣿⣿⣿⣿⣿]      0B/0B      Pulled                                                                                                         81.8s
+```
 
 `run-o11y-run` is a command-line tool with three simple commands: `start`, `stop`, and `clean`.
 
@@ -48,52 +79,16 @@ Download the latest version from the [Releases](https://github.com/krzko/run-o11
 - `clean`: Stops and removes run-o11y-run containers, files, and networks.
   Example: `run-o11y-run clean`
 
-### Examples
+## Local Service Links
 
-```sh
-# start
-$ run-o11y-run start
-
-[+] Running 3/24
- ⠿ prometheus Pulled                                                                                                                                           78.5s
-   ⠹ 3760d0bcb02f Download complete                                                                                                                            75.1s
-   ⠇ 6c79eaae9b9d Download complete                                                                                                                            67.7s
-   ⠼ cd1927291d25 Download complete                                                                                                                            67.3s
- ⠿ grafana Pulled                                                                                                                                               3.3s
-   ⠸ 76dcf36e7d2a Exists                                                                                                                                       75.2s
-   ⠹ 35449a2b1546 Exists                                                                                                                                       75.2s
-   ⠹ 216f8a5c1abe Exists                                                                                                                                       75.2s
- ⠿ otel-collector Pulled                                                                                                                                        3.3s
-   ⠸ 8476389c268a Exists                                                                                                                                       75.2s
-
-# clean
-run-o11y-run clean
-
-[+] Running 5/4
- ⠿ Container stack-prometheus-1      Removed                                                                                                                    0.1s
- ⠿ Container stack-grafana-1         Removed                                                                                                                    0.1s
- ⠿ Container stack-tempo-1           Removed                                                                                                                    0.1s
- ⠿ Container stack-otel-collector-1  Removed                                                                                                                    0.1s
- ⠿ Network stack_default             Removed                                                                                                                    0.0s
-```
-
-## Local Links
-
+* [Grafana Loki](http://localhost:3000/explore?orgId=1&left=%7B%22datasource%22:%22P8E80F9AEF21F6940%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22datasource%22:%7B%22type%22:%22loki%22,%22uid%22:%22P8E80F9AEF21F6940%22%7D%7D%5D,%22range%22:%7B%22from%22:%22now-1h%22,%22to%22:%22now%22%7D%7D)
 * [Grafana Tempo](http://localhost:3000/explore?orgId=1&left=%7B%22datasource%22:%22tempo%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22datasource%22:%7B%22type%22:%22tempo%22,%22uid%22:%22tempo%22%7D%7D%5D,%22range%22:%7B%22from%22:%22now-1h%22,%22to%22:%22now%22%7D%7D)
 * [Grafana Prometheus](http://localhost:3000/explore?orgId=1&left=%7B%22datasource%22:%22prometheus%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22datasource%22:%7B%22type%22:%22prometheus%22,%22uid%22:%22prometheus%22%7D%7D%5D,%22range%22:%7B%22from%22:%22now-1h%22,%22to%22:%22now%22%7D%7D)
 * [Prometheus Direct](http://localhost:9090/)
 
-## Services
-
-The underlying observability stack is built on Grafana products. It includes the following components:
-
-* Grafana
-* Grafana Tempo
-* OpenTelemetry Collector
-* Prometheus
-
 ## Documentation
 
+* [LogQL](https://grafana.com/docs/loki/latest/logql/)
 * [PromQL](https://prometheus.io/docs/prometheus/latest/querying/basics/)
 * [TraceQL](https://grafana.com/docs/tempo/latest/traceql/)
 
