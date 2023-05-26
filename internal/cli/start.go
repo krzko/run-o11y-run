@@ -117,7 +117,6 @@ func addRegistryPrefix(filePath, registry string) error {
 	}
 
 	return writeDockerCompose(filePath, composeMap)
-
 }
 
 // addExternalNetwork adds the registry prefix to the image field of the Docker Compose file

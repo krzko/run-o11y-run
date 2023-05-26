@@ -76,7 +76,7 @@ func removeDirectory(dir string) error {
 }
 
 // runDockerCompose runs a docker compose command
-func runDockerCompose(dir string, subcommand string, flag string) error {
+func runDockerCompose(dir, subcommand, flag string) error {
 	args := []string{"compose", subcommand}
 	if flag != "" {
 		args = append(args, flag)
