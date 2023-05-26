@@ -148,7 +148,8 @@ func addExternalNetwork(filePath string) error {
 			"driver": "bridge",
 		},
 		"o11y": {
-			"external": true,
+			"name":       "o11y",
+			"attachable": true,
 		},
 	}
 	return writeDockerCompose(filePath, composeMap)
