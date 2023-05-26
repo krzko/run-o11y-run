@@ -40,7 +40,7 @@ Customer managed `docker-compose` with `app 1` & `app 2` is connected to `run-o1
 ```mermaid
 flowchart TD
 
-    subgraph run-o11y-run["run-o11-run docker-compose"]
+    subgraph run-o11y-run["run-o11y-run docker-compose"]
       direction LR
     
       collector
