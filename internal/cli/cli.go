@@ -30,7 +30,7 @@ func New(version, commit, date string) *cli.App {
 	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(c), func(i, j int) { c[i], c[j] = c[j], c[i] })
 
-	colors := make(map[int]func(...interface{}) string)
+	colors := make(map[int]func(...any) string)
 	for i, attr := range c {
 		colors[i] = color.New(attr).SprintFunc()
 	}
