@@ -8,7 +8,7 @@ To achieve this goal, please run `run-o11y-run` with `--external-network` flag
 run-o11y-run start --external-network 
 ```
 
-and modify your dockerfile to use `o11y` network like:
+and modify your dockerfile to use `o11y` network. Sample setup may look like:
 
 ```yaml
 networks:
@@ -23,12 +23,12 @@ services:
     networks:
       - o11y
     environments:
-    - OTEL_EXPORTER_OTLP_ENDPOINT: run-o11y-run-otel-collector:43..
+    - OTEL_EXPORTER_OTLP_ENDPOINT: otel-collector:431...
 
   bar:
     image: ...
     networks:
       - o11y
     environemnts:
-    - OTEL_EXPORTER_OTLP_ENDPOINT: run-o11y-run-otel-collector:43..
+    - OTEL_EXPORTER_OTLP_ENDPOINT: otel-collector:431...
 ```
