@@ -32,3 +32,31 @@ services:
     environemnts:
     - OTEL_EXPORTER_OTLP_ENDPOINT: otel-collector:431...
 ```
+
+## Network flow
+
+Customer managed `docker-compose` with `app 1` & `app 2` is connected to `run-o11y-run` assets via `o11y` network which is defined as external.
+
+```mermaid
+flowchart TD
+
+    subgraph run-o11y-run["run-o11-run docker-compose"]
+      direction LR
+    
+      collector
+      minio --- loki
+      collector --- loki
+      collector --- prometheus
+      collector --- zipkin
+    end
+
+    subgraph application["application docker-compose"]
+      direction LR
+
+      app1[app 1]
+      app2[app 2]
+      app1 --"default network"---app2
+    end
+
+    application---collector
+```

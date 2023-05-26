@@ -7,6 +7,7 @@ import (
 
 	"github.com/krzko/run-o11y-run/internal/files"
 	"github.com/urfave/cli/v2"
+	"golang.org/x/exp/slices"
 	"gopkg.in/yaml.v2"
 )
 
@@ -130,12 +131,18 @@ func addExternalNetwork(filePath string) error {
 	// Modify newtorks field with the external network
 	services, ok := composeMap["services"].(map[any]any)
 	if ok {
-		for _, sAny := range services {
+		for nAny, sAny := range services {
 			service, ok := sAny.(map[any]any)
 			if !ok {
 				return fmt.Errorf("unexpected type for service")
 			}
-			service["networks"] = []string{"o11y", "default"}
+			service["networks"] = []string{"default"}
+			name, _ := nAny.(string)
+			if slices.Contains([]string{"otel-collector"}, name) {
+				// inject o11y network only to otel-collector service.
+				// other services like mini-o11y-stack, grafana, etc. should not be exposed.
+				service["networks"] = []string{"o11y", "default"}
+			}
 		}
 	} else {
 		return fmt.Errorf("error during injecting external network to service defintion")
