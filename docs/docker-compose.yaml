@@ -1,0 +1,15 @@
+version: '2'
+
+networks:
+  o11y:
+    name: o11y
+    driver: bridge
+    external: true
+
+services:
+  curl:
+    image: curlimages/curl:latest
+    networks:
+      - o11y
+    # Generates, HTTP/1.1 405 Method Not Allowed
+    command: "-v otel-collector:4318/v1/traces"
