@@ -49,11 +49,13 @@ Download the latest version from the [Releases](https://github.com/krzko/run-o11
     * Jaeger: http://localhost:14268
     * Zipkin: http://localhost:9411
 * Logs are procedd via two means:
-  * Tailed from `/var/log/*.log` and `$(PWD)/*.log` on your local machine.
+  * Tailed from `/var/log/*.log` and `./*.log` on your local machine.
   * A Syslog RFC 3164 header format, `syslog` receiver operates on `localhost:8094`
 * To exit gracefully, press `CTRL+C`.
 
 ## Commands
+
+`run-o11y-run` is a powerful command-line tool that provides seamless management of your local observability stack. It offers three simple commands: `start`, `stop`, and `clean`.
 
 ```sh
 $ run-o11y-run start
@@ -68,16 +70,37 @@ $ run-o11y-run start
  ✔ loki 9 layers [⣿⣿⣿⣿⣿⣿⣿⣿⣿]      0B/0B      Pulled                                                                                                         81.8s
 ```
 
-`run-o11y-run` is a command-line tool with three simple commands: `start`, `stop`, and `clean`.
+### Start Command
 
-- `start`: Starts run-o11y-run containers. You can use the `--registry` flag to specify a Docker Registry. By default, it uses Docker Hub, but if you wish to specifcy your own, use this example
-  Example: `run-o11y-run start --registry <registry-url>`
+The `start` command allows you to launch run-o11y-run containers and start your observability stack effortlessly. You can customise the behaviour using various flags.
 
-- `stop`: Stops run-o11y-run containers.
-  Example: `run-o11y-run stop`
+One such flag is the `--registry` flag, which enables you to specify a Docker Registry from which to pull the required images. By default, run-o11y-run uses Docker Hub as the registry. Here's an example of using the `--registry flag`:
 
-- `clean`: Stops and removes run-o11y-run containers, files, and networks.
-  Example: `run-o11y-run clean`
+```sh
+run-o11y-run start --registry <registry-url>
+```
+
+Replace `<registry-url>` with the URL of your desired Docker Registry.
+
+To further enhance your setup, you can also utilise the `--external-network` flag, which enables integration of your own docker-compose configurations with run-o11y-run. This allows you to combine the services of run-o11y-run with your existing infrastructure seamlessly.
+
+For more details on using the `--external-network` flag, refer to the [External Network Guide](docs/external-network.md).
+
+### Stop Command
+
+The `stop` command is used to gracefully stop the run-o11y-run containers. It ensures a clean shutdown of your observability stack. Here's an example of using the `stop` command:
+
+```sh
+run-o11y-run stop
+```
+
+### Clean Command
+
+The `clean` command is used to stop and remove run-o11y-run containers, files, and networks. It helps you clean up your environment after using run-o11y-run. Here's an example of using the `clean` command:
+
+```sh
+run-o11y-run clean
+```
 
 ## Local Service Links
 
