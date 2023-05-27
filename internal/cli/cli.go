@@ -30,7 +30,7 @@ func New(version, commit, date string) *cli.App {
 	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(c), func(i, j int) { c[i], c[j] = c[j], c[i] })
 
-	colors := make(map[int]func(...interface{}) string)
+	colors := make(map[int]func(...any) string)
 	for i, attr := range c {
 		colors[i] = color.New(attr).SprintFunc()
 	}
@@ -76,7 +76,7 @@ func removeDirectory(dir string) error {
 }
 
 // runDockerCompose runs a docker compose command
-func runDockerCompose(dir string, subcommand string, flag string) error {
+func runDockerCompose(dir, subcommand, flag string) error {
 	args := []string{"compose", subcommand}
 	if flag != "" {
 		args = append(args, flag)

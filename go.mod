@@ -5,6 +5,7 @@ go 1.20
 require (
 	github.com/fatih/color v1.15.0
 	github.com/urfave/cli/v2 v2.25.3
+	golang.org/x/exp v0.0.0-20230522175609-2e198f4a06a1
 	gopkg.in/yaml.v2 v2.4.0
 )
 
