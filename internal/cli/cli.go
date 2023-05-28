@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/fatih/color"
+	"github.com/mitchellh/go-homedir"
 	"github.com/urfave/cli/v2"
 	"golang.org/x/exp/slices"
 )
@@ -71,6 +72,16 @@ func New(version, commit, date string) *cli.App {
 func checkDockerAvailability() bool {
 	_, err := exec.LookPath("docker")
 	return err == nil
+}
+
+// getHomeDir returns the user's home directory
+func getHomeDir() string {
+	home, err := homedir.Dir()
+	if err != nil {
+		fmt.Println("Failed to get home directory:", err)
+		os.Exit(1)
+	}
+	return home
 }
 
 // removeDirectory removes a directory and all its contents
