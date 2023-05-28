@@ -31,16 +31,12 @@ func genPortsCommand() *cli.Command {
 			table.SetHeader([]string{"Port", "Service"})
 			table.SetAutoFormatHeaders(true)
 			table.SetAlignment(tablewriter.ALIGN_LEFT)
-
 			table.SetHeaderColor(tablewriter.Colors{tablewriter.Bold},
 				tablewriter.Colors{tablewriter.Bold})
-
 			table.SetColumnColor(tablewriter.Colors{tablewriter.Bold, tablewriter.FgGreenColor},
 				tablewriter.Colors{tablewriter.Bold, tablewriter.FgCyanColor})
-
 			table.AppendBulk(data)
 			table.Render()
-
 			fmt.Println()
 
 			return nil
