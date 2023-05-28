@@ -23,7 +23,8 @@ func genStopCommand() *cli.Command {
 				os.Exit(1)
 			}
 
-			targetDir := "run_o11y_run_files"
+			homeDir := getHomeDir()
+			targetDir := filepath.Join(homeDir, ".run-o11y-run")
 			err := files.ExtractFiles(targetDir)
 			if err != nil {
 				fmt.Println("Error extracting files:", err)
