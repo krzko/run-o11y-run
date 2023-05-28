@@ -11,6 +11,7 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/urfave/cli/v2"
+	"golang.org/x/exp/slices"
 )
 
 func initBanner(c *cli.Context) error {
@@ -76,11 +77,9 @@ func removeDirectory(dir string) error {
 }
 
 // runDockerCompose runs a docker compose command
-func runDockerCompose(dir, subcommand, flag string) error {
+func runDockerCompose(dir, subcommand string, flags ...string) error {
 	args := []string{"compose", subcommand}
-	if flag != "" {
-		args = append(args, flag)
-	}
+	args = append(args, flags...)
 
 	cmd := exec.Command("docker", args...)
 	cmd.Dir = dir
@@ -91,7 +90,10 @@ func runDockerCompose(dir, subcommand, flag string) error {
 	if err != nil {
 		return fmt.Errorf("docker compose %s failed: %w", subcommand, err)
 	}
-
+	if slices.Contains(args, "--detach") {
+		fmt.Println("🚀 Started in detached mode")
+		return nil
+	}
 	if subcommand == "down" {
 		err = cmd.Wait()
 		if err != nil {

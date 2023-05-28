@@ -86,6 +86,8 @@ To further enhance your setup, you can also utilise the `--external-network` fla
 
 For more details on using the `--external-network` flag, refer to the [External Network Guide](docs/external-network.md).
 
+To start run-o11y-run in `detached` mode, use the `--detach` flag. This will start the containers in the background.
+
 ### Stop Command
 
 The `stop` command is used to gracefully stop the run-o11y-run containers. It ensures a clean shutdown of your observability stack. Here's an example of using the `stop` command:

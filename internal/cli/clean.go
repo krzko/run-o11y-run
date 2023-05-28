@@ -38,13 +38,13 @@ func genCleanCommand() *cli.Command {
 			}
 
 			if c.Bool("legacy") {
-				err = runDockerCompose(filepath.Join(targetDir, "files", "grafana", "stack"), "down", "")
+				err = runDockerCompose(filepath.Join(targetDir, "files", "grafana", "stack"), "down")
 				if err != nil {
 					fmt.Println("Error running docker compose down:", err)
 					return err
 				}
 			} else {
-				err = runDockerCompose(filepath.Join(targetDir, "files", "grafana", "run-o11y-run"), "down", "")
+				err = runDockerCompose(filepath.Join(targetDir, "files", "grafana", "run-o11y-run"), "down")
 				if err != nil {
 					fmt.Println("Error running docker compose down:", err)
 					return err

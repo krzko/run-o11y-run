@@ -25,9 +25,14 @@ func genStartCommand() *cli.Command {
 				Value:   "registry-1.docker.io",
 			},
 			&cli.BoolFlag{
-				Name:    "debug",
-				Aliases: []string{"d"},
-				Usage:   "debug mode",
+				Name:  "debug",
+				Usage: "debug mode",
+				Value: false,
+			},
+			&cli.BoolFlag{
+				Name:    "detach",
+				Aliases: []string{"detached"},
+				Usage:   "deatched mode",
 				Value:   false,
 			},
 			&cli.BoolFlag{
@@ -78,13 +83,19 @@ func genStartCommand() *cli.Command {
 			}
 
 			// Run the Docker Compose up command
-			err = runDockerCompose(filepath.Join(targetDir, "files", "grafana", "run-o11y-run"), "up", "")
+			flags := make([]string, 0)
+			if c.Bool("detach") {
+				flags = append(flags, "--detach")
+			}
+
+			err = runDockerCompose(filepath.Join(targetDir, "files", "grafana", "run-o11y-run"), "up", flags...)
 			if err != nil {
 				fmt.Println("Error running docker compose up:", err)
 				return err
 			}
-
-			fmt.Println("🏁 Stopped...")
+			if !c.Bool("detach") {
+				fmt.Println("🏁 Stopped...")
+			}
 			return nil
 		},
 	}
