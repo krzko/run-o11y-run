@@ -96,6 +96,18 @@ The `stop` command is used to gracefully stop the run-o11y-run containers. It en
 run-o11y-run stop
 ```
 
+### Open Command
+
+The `open` command allows you to conveniently open various services provided by run-o11y-run in your default web browser. This feature saves you time by quickly launching the relevant service pages.:
+
+```sh
+run-o11y-run open --service <loki|tempo|prometheus|prometheus-direct>
+```
+
+Ensure that run-o11y-run is already running before using the open command.
+
+**Note:** Make sure your default web browser is properly configured on your system for this command to work.
+
 ### Clean Command
 
 The `clean` command is used to stop and remove run-o11y-run containers, files, and networks. It helps you clean up your environment after using run-o11y-run. Here's an example of using the `clean` command:

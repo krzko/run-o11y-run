@@ -54,6 +54,7 @@ func New(version, commit, date string) *cli.App {
 		Flags:   flags,
 		Commands: []*cli.Command{
 			genCleanCommand(),
+			genOpenCommand(),
 			genStartCommand(),
 			genStopCommand(),
 		},
