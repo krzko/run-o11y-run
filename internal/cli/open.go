@@ -2,10 +2,8 @@ package cli
 
 import (
 	"fmt"
-	"log"
-	"os/exec"
-	"runtime"
 
+	"github.com/pkg/browser"
 	"github.com/urfave/cli/v2"
 )
 
@@ -24,7 +22,6 @@ func genOpenCommand() *cli.Command {
 			},
 		},
 		Action: func(c *cli.Context) error {
-
 			service := c.String("service")
 			url := ""
 
@@ -41,7 +38,7 @@ func genOpenCommand() *cli.Command {
 				return fmt.Errorf("unsupported service")
 			}
 
-			err := openBrowser(url)
+			err := browser.OpenURL(url)
 			if err != nil {
 				return err
 			}
@@ -50,26 +47,4 @@ func genOpenCommand() *cli.Command {
 			return nil
 		},
 	}
-}
-
-// openBrowser opens the URL in the default web browser based on the operating system
-func openBrowser(url string) error {
-	var err error
-
-	switch runtime.GOOS {
-	case "linux":
-		err = exec.Command("xdg-open", url).Start()
-	case "windows":
-		err = exec.Command("rundll32", "url.dll,FileProtocolHandler", url).Start()
-	case "darwin":
-		err = exec.Command("open", url).Start()
-	default:
-		err = fmt.Errorf("unsupported platform")
-	}
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return err
 }
