@@ -84,9 +84,9 @@ Replace `<registry-url>` with the URL of your desired Docker Registry.
 
 To further enhance your setup, you can also utilise the `--external-network` flag, which enables integration of your own docker-compose configurations with run-o11y-run. This allows you to combine the services of run-o11y-run with your existing infrastructure seamlessly.
 
-For more details on using the `--external-network` flag, refer to the [External Network Guide](docs/external-network.md).
-
 To start run-o11y-run in `detached` mode, use the `--detach` flag. This will start the containers in the background.
+
+For more details on using the `--external-network` flag, refer to the [External Network](docs/external-network.md) guide.
 
 ### Stop Command
 

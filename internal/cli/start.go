@@ -31,8 +31,8 @@ func genStartCommand() *cli.Command {
 			},
 			&cli.BoolFlag{
 				Name:    "detach",
-				Aliases: []string{"detached"},
-				Usage:   "deatched mode",
+				Aliases: []string{"d", "detached"},
+				Usage:   "detached mode, to run containers in the background",
 				Value:   false,
 			},
 			&cli.BoolFlag{
