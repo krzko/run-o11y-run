@@ -151,7 +151,7 @@ func addExternalNetwork(filePath string) error {
 			name, _ := nAny.(string)
 			// inject o11y network only to otel-collector and tempo service.
 			// other services like mini-o11y-stack, grafana, etc. should not be exposed.
-			if slices.Contains([]string{"otel-collector"}, name) || slices.Contains([]string{"tempo"}, name) {
+			if slices.Contains([]string{"otel-collector", "tempo"}, name) {
 				service["networks"] = []string{"o11y", "default"}
 			}
 		}
