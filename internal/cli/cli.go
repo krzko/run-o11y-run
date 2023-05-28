@@ -11,6 +11,7 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/urfave/cli/v2"
+	"golang.org/x/exp/slices"
 )
 
 func initBanner(c *cli.Context) error {
@@ -88,6 +89,10 @@ func runDockerCompose(dir, subcommand string, flags ...string) error {
 	err := cmd.Start()
 	if err != nil {
 		return fmt.Errorf("docker compose %s failed: %w", subcommand, err)
+	}
+	if slices.Contains(args, "--detach") {
+		fmt.Println("🚀 Started in detached mode")
+		return nil
 	}
 	if subcommand == "down" {
 		err = cmd.Wait()
