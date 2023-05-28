@@ -116,6 +116,27 @@ The `clean` command is used to stop and remove run-o11y-run containers, files, a
 run-o11y-run clean
 ```
 
+### Ports Command
+
+The `ports` command allows you to list the available ports used by the application. It provides a convenient way to check which ports are used by various services within the observability stack.
+
+Here's an example output of the ports command:
+
+```sh
++-----------+-------------------+
+|   PORT    |      SERVICE      |
++-----------+-------------------+
+| 3000/tcp  | Grafana           |
+| 3100/tcp  | Loki              |
+| 4317/tcp  | OTLP (gRPC)       |
+| 4318/tcp  | OTLP (HTTP)       |
+| 8094/tcp  | Syslog (RFC3164)  |
+| 9090/tcp  | Prometheus Direct |
+| 9411/tcp  | Zipkin            |
+| 14268/tcp | Jaeger            |
++-----------+-------------------+
+```
+
 ## Local Service Links
 
 * [Grafana Loki](http://localhost:3000/explore?orgId=1&left=%7B%22datasource%22:%22P8E80F9AEF21F6940%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22datasource%22:%7B%22type%22:%22loki%22,%22uid%22:%22P8E80F9AEF21F6940%22%7D%7D%5D,%22range%22:%7B%22from%22:%22now-1h%22,%22to%22:%22now%22%7D%7D)
