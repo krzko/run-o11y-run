@@ -122,11 +122,11 @@ func addRegistryPrefix(filePath, registry string) error {
 			if ok {
 				service["image"] = fmt.Sprintf("%s/%s", registry, image)
 			} else {
-				return fmt.Errorf("error during injecting external registry to service(%s) image defintion", name)
+				return fmt.Errorf("error during injecting external registry to service(%s) image definition", name)
 			}
 		}
 	} else {
-		return fmt.Errorf("error during injecting external registry to service image defintion")
+		return fmt.Errorf("error during injecting external registry to service image definition")
 	}
 
 	return writeDockerCompose(filePath, composeMap)
@@ -157,7 +157,7 @@ func addExternalNetwork(filePath string) error {
 			}
 		}
 	} else {
-		return fmt.Errorf("error during injecting external network to service defintion")
+		return fmt.Errorf("error during injecting external network to service definition")
 	}
 
 	// global networks
