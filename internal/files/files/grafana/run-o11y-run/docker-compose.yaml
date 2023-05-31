@@ -14,7 +14,7 @@ services:
       - GF_AUTH_DISABLE_LOGIN_FORM=true
       - GF_FEATURE_TOGGLES_ENABLE=traceqlEditor
       # - GF_INSTALL_PLUGINS=pyroscope-datasource,pyroscope-panel
-      - NO_PROXY=grafana,loki,minio,ote-collector,prometheus,pyroscope,tempo
+      - NO_PROXY=grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo
     ports:
       - "3000:3000"
 
@@ -22,7 +22,7 @@ services:
     image: grafana/loki:2.8.2
     command: "-config.file=/etc/loki/local-config.yaml"
     environment:
-      - NO_PROXY=grafana,loki,minio,ote-collector,prometheus,pyroscope,tempo
+      - NO_PROXY=grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo
     ports:
       - "3100:3100"
       - 7946
@@ -51,7 +51,7 @@ services:
       - MINIO_ROOT_PASSWORD=supersecret
       - MINIO_PROMETHEUS_AUTH_TYPE=public
       - MINIO_UPDATE=off
-      - NO_PROXY=grafana,loki,minio,ote-collector,prometheus,pyroscope,tempo
+      - NO_PROXY=grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo
     ports:
       - 9000
     volumes:
@@ -74,7 +74,7 @@ services:
       - "4318:4318"   # otlp http
       - "8094:8094"   # syslog
     environment:
-      - NO_PROXY=grafana,loki,minio,ote-collector,prometheus,pyroscope,tempo
+      - NO_PROXY=grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo
     depends_on:
       - loki
       - prometheus
@@ -91,7 +91,7 @@ services:
     ports:
       - "9090:9090"
     environment:
-      - NO_PROXY=grafana,loki,minio,ote-collector,prometheus,pyroscope,tempo
+      - NO_PROXY=grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo
 
   pyroscope:
     image: pyroscope/pyroscope:0.37.2
@@ -100,7 +100,7 @@ services:
     command:
       - server
     environment:
-      - NO_PROXY=grafana,loki,minio,ote-collector,prometheus,pyroscope,tempo
+      - NO_PROXY=grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo
       - PYROSCOPE_LOG_LEVEL=info
       - PYROSCOPE_WAIT_AFTER_STOP=true
 
@@ -116,4 +116,4 @@ services:
       - "9095:9095"   # tempo grpc
       - "9411:9411"   # zipkin
     environment:
-      - NO_PROXY=grafana,loki,minio,ote-collector,prometheus,pyroscope,tempo
+      - NO_PROXY=grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo
