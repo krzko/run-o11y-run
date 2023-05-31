@@ -125,16 +125,26 @@ func runDockerCompose(dir, subcommand string, flags ...string) error {
 		case <-signalChan:
 			fmt.Printf("Received interrupt signal, stopping Docker %s...\n", subcommand)
 			_ = cmd.Process.Signal(os.Interrupt)
+
+			select {
+			case <-signalChan:
+				fmt.Printf("Forcefully stopping Docker %s...\n", subcommand)
+				_ = cmd.Process.Kill()
+				os.Exit(1) // Exit with a status code of 1
+			case <-done:
+				os.Exit(0) // Exit with a status code of 0
+			}
 		case err := <-done:
 			if err != nil {
-				return fmt.Errorf("docker compose %s failed: %w", subcommand, err)
+				os.Exit(1) // Exit with a status code of 1 upon failure
 			}
 		}
 
 		err = <-done
 		if err != nil {
-			return fmt.Errorf("docker compose %s failed: %w", subcommand, err)
+			os.Exit(1) // Exit with a status code of 1 upon failure
 		}
+
 	}
 
 	return nil

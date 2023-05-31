@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/krzko/run-o11y-run/internal/files"
 	"github.com/urfave/cli/v2"
@@ -40,6 +41,11 @@ func genStartCommand() *cli.Command {
 				Usage: "external network mode for docker compose",
 				Value: false,
 			},
+			&cli.BoolFlag{
+				Name:  "yolo",
+				Usage: "apply the :latest tag to all images. Caution: This may result in breaking changes to the setup",
+				Value: false,
+			},
 		},
 		Action: func(c *cli.Context) error {
 			fmt.Println("✨ Starting...")
@@ -63,6 +69,14 @@ func genStartCommand() *cli.Command {
 			if err = addRegistryPrefix(dockerComposePath, c.String("registry")); err != nil {
 				fmt.Println("Error adding registry prefix to Docker Compose file:", err)
 				return err
+			}
+
+			// Add :latest tag to images if specified
+			if c.Bool("yolo") {
+				if err = addLatestTag(dockerComposePath); err != nil {
+					fmt.Println("Error adding :latest tag to Docker Compose file:", err)
+					return err
+				}
 			}
 
 			// Modify the Docker Compose to expose named network for other Docker Composes
@@ -102,6 +116,80 @@ func genStartCommand() *cli.Command {
 	}
 }
 
+// addExternalNetwork adds the registry prefix to the image field of the Docker Compose file
+func addExternalNetwork(filePath string) error {
+	// Read the Docker Compose file
+	composeMap, err := dockeComposeMap(filePath)
+	if err != nil {
+		return err
+	}
+
+	// Modify newtorks field with the external network
+	services, ok := composeMap["services"].(map[any]any)
+	if ok {
+		for nAny, sAny := range services {
+			service, ok := sAny.(map[any]any)
+			if !ok {
+				return fmt.Errorf("unexpected type for service")
+			}
+			service["networks"] = []string{"default"}
+			name, _ := nAny.(string)
+			// inject o11y network only to otel-collector and tempo service.
+			// other services like mini-o11y-stack, grafana, etc. should not be exposed.
+			if slices.Contains([]string{"otel-collector", "pyroscope", "tempo"}, name) {
+				service["networks"] = []string{"o11y", "default"}
+			}
+		}
+	} else {
+		return fmt.Errorf("error during injecting external network to service definition")
+	}
+
+	// global networks
+	composeMap["networks"] = map[string]map[string]any{
+		"default": {
+			"driver": "bridge",
+		},
+		"o11y": {
+			"name":       "o11y",
+			"attachable": true,
+		},
+	}
+	return writeDockerCompose(filePath, composeMap)
+}
+
+// addLatestTag replaces the tag portion of the image field with "latest" in the Docker Compose file
+func addLatestTag(filePath string) error {
+	// Read the Docker Compose file
+	composeMap, err := dockeComposeMap(filePath)
+	if err != nil {
+		return err
+	}
+
+	// Modify the image field with "latest" tag for all services
+	services, ok := composeMap["services"].(map[interface{}]interface{})
+	if ok {
+		for name, sAny := range services {
+			service, ok := sAny.(map[any]any)
+			if !ok {
+				return fmt.Errorf("unexpected type for service")
+			}
+			image, ok := service["image"].(string)
+			if ok {
+				parts := strings.SplitN(image, ":", 2)
+				if len(parts) == 2 {
+					service["image"] = fmt.Sprintf("%s:latest", parts[0])
+				}
+			} else {
+				return fmt.Errorf("error during adding 'latest' tag to service(%s) image definition", name)
+			}
+		}
+	} else {
+		return fmt.Errorf("error during adding 'latest' tag to service image definition")
+	}
+
+	return writeDockerCompose(filePath, composeMap)
+}
+
 // addRegistryPrefix adds the registry prefix to the image field of the Docker Compose file
 func addRegistryPrefix(filePath, registry string) error {
 	// Read the Docker Compose file
@@ -129,47 +217,6 @@ func addRegistryPrefix(filePath, registry string) error {
 		return fmt.Errorf("error during injecting external registry to service image definition")
 	}
 
-	return writeDockerCompose(filePath, composeMap)
-}
-
-// addExternalNetwork adds the registry prefix to the image field of the Docker Compose file
-func addExternalNetwork(filePath string) error {
-	// Read the Docker Compose file
-	composeMap, err := dockeComposeMap(filePath)
-	if err != nil {
-		return err
-	}
-
-	// Modify newtorks field with the external network
-	services, ok := composeMap["services"].(map[any]any)
-	if ok {
-		for nAny, sAny := range services {
-			service, ok := sAny.(map[any]any)
-			if !ok {
-				return fmt.Errorf("unexpected type for service")
-			}
-			service["networks"] = []string{"default"}
-			name, _ := nAny.(string)
-			// inject o11y network only to otel-collector and tempo service.
-			// other services like mini-o11y-stack, grafana, etc. should not be exposed.
-			if slices.Contains([]string{"otel-collector", "tempo"}, name) {
-				service["networks"] = []string{"o11y", "default"}
-			}
-		}
-	} else {
-		return fmt.Errorf("error during injecting external network to service definition")
-	}
-
-	// global networks
-	composeMap["networks"] = map[string]map[string]any{
-		"default": {
-			"driver": "bridge",
-		},
-		"o11y": {
-			"name":       "o11y",
-			"attachable": true,
-		},
-	}
 	return writeDockerCompose(filePath, composeMap)
 }
 

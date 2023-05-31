@@ -18,7 +18,7 @@ The underlying observability stack is built on [Grafana](https://grafana.com/) p
 * [MinIO](https://min.io/)
 * [OpenTelemetry Collector](https://opentelemetry.io/docs/collector/)
 * [Prometheus](https://grafana.com/oss/prometheus/)
-
+* [Pyroscope](https://pyroscope.io/)
 
 ## Prerequisites
 
@@ -48,9 +48,10 @@ Download the latest version from the [Releases](https://github.com/krzko/run-o11
     * OTLP (http): http://localhost:4318
     * Jaeger: http://localhost:14268
     * Zipkin: http://localhost:9411
-* Logs are procedd via two means:
+* Logs are processed via two means:
   * Tailed from `/var/log/*.log` and `./*.log` on your local machine.
   * A Syslog RFC 3164 header format, `syslog` receiver operates on `localhost:8094`
+* Profiling data can be pushed to http://localhost:4040
 * To exit gracefully, press `CTRL+C`.
 
 ## Commands
@@ -86,6 +87,10 @@ To further enhance your setup, you can also utilise the `--external-network` fla
 
 To start run-o11y-run in `detached` mode, use the `--detach` flag. This will start the containers in the background.
 
+The `--yolo` flag can be used with the run-o11y-run command to apply the `:latest` tag to all images in your stack. This flag allows you to conveniently run the latest versions of the images without specifying the specific tags.
+
+  * **NOTE:** However, please note that using the `--yolo` flag may introduce potential risks, as it may lead to compatibility issues or unexpected behaviour if the latest images have breaking changes or dependencies
+
 For more details on using the `--external-network` flag, refer to the [External Network](docs/external-network.md) guide.
 
 ### Stop Command
@@ -101,7 +106,7 @@ run-o11y-run stop
 The `open` command allows you to conveniently open various services provided by run-o11y-run in your default web browser. This feature saves you time by quickly launching the relevant service pages.:
 
 ```sh
-run-o11y-run open --service <loki|tempo|prometheus|prometheus-direct>
+run-o11y-run open --service <loki|tempo|prometheus|prometheus-direct|pyroscope-direct>
 ```
 
 Ensure that run-o11y-run is already running before using the open command.
@@ -128,6 +133,7 @@ Here's an example output of the ports command:
 +-----------+-------------------+
 | 3000/tcp  | Grafana           |
 | 3100/tcp  | Loki              |
+| 4040/tcp  | Pyropscope        |
 | 4317/tcp  | OTLP (gRPC)       |
 | 4318/tcp  | OTLP (HTTP)       |
 | 8094/tcp  | Syslog (RFC3164)  |
@@ -143,9 +149,11 @@ Here's an example output of the ports command:
 * [Grafana Tempo](http://localhost:3000/explore?orgId=1&left=%7B%22datasource%22:%22tempo%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22datasource%22:%7B%22type%22:%22tempo%22,%22uid%22:%22tempo%22%7D%7D%5D,%22range%22:%7B%22from%22:%22now-1h%22,%22to%22:%22now%22%7D%7D)
 * [Grafana Prometheus](http://localhost:3000/explore?orgId=1&left=%7B%22datasource%22:%22prometheus%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22datasource%22:%7B%22type%22:%22prometheus%22,%22uid%22:%22prometheus%22%7D%7D%5D,%22range%22:%7B%22from%22:%22now-1h%22,%22to%22:%22now%22%7D%7D)
 * [Prometheus Direct](http://localhost:9090/)
+* [Pyroscope Direct](http://localhost:4040/)
 
 ## Documentation
 
+* [FlameQL](https://pyroscope.io/docs/flameql/)
 * [LogQL](https://grafana.com/docs/loki/latest/logql/)
 * [PromQL](https://prometheus.io/docs/prometheus/latest/querying/basics/)
 * [TraceQL](https://grafana.com/docs/tempo/latest/traceql/)

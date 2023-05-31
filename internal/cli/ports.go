@@ -18,6 +18,7 @@ func genPortsCommand() *cli.Command {
 			data := [][]string{
 				{"3000/tcp", "Grafana"},
 				{"3100/tcp", "Loki"},
+				{"4040/tcp", "Pyroscope"},
 				{"4317/tcp", "OTLP (gRPC)"},
 				{"4318/tcp", "OTLP (HTTP)"},
 				{"8094/tcp", "Syslog (RFC3164)"},
