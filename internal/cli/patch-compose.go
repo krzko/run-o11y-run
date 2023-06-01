@@ -60,11 +60,14 @@ func genPatchComposeCommand() *cli.Command {
 					}
 					serviceNetworks, ok := service["networks"].([]any)
 					if ok {
+						if !slices.Contains(serviceNetworks, "default") {
+							service["networks"] = append(serviceNetworks, "default")
+						}
 						if !slices.Contains(serviceNetworks, "o11y") {
-							service["networks"] = append(serviceNetworks, "o11y", "default")
+							service["networks"] = append(serviceNetworks, "o11y")
 						}
 					} else {
-						service["networks"] = []string{"o11y", "default"}
+						service["networks"] = []string{"default", "o11y"}
 					}
 
 					environments, ok := service["environment"].(map[any]any)
