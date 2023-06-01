@@ -10,3 +10,8 @@ run-o11y-run  patch-compose  -f ${PATH_TO_DOCKER_COMPOSE_YAML}
 ```
 
 iw will inject `o11y`network configuration to compose and inject network to ALL services within customer owned docker-compose.
+
+By default injected env var will point to http exporters:
+```yaml
+OTEL_EXPORTER_OTLP_ENDPOINT: otel-collector:4317
+```
