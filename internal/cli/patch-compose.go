@@ -83,7 +83,7 @@ func genPatchComposeCommand() *cli.Command {
 			} else {
 				return fmt.Errorf("error during injecting external network to service definition")
 			}
-			fmt.Printf("writhing changes to %s", composeFile)
+			fmt.Printf("writhing changes to %s\n", composeFile)
 			return writeDockerCompose(composeFile, composeMap)
 		},
 	}
