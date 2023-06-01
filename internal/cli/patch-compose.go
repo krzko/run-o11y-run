@@ -71,11 +71,12 @@ func genPatchComposeCommand() *cli.Command {
 					}
 
 					environments, ok := service["environment"].(map[any]any)
+					const otelCollectorEndpoint = "otel-collector:4317"
 					if ok {
-						environments["OTEL_EXPORTER_OTLP_ENDPOINT"] = "otel-collector:4317"
+						environments["OTEL_EXPORTER_OTLP_ENDPOINT"] = otelCollectorEndpoint
 						service["environment"] = environments
 					} else {
-						service["environment"] = map[string]string{"OTEL_EXPORTER_OTLP_ENDPOINT": "otel-collector:4317"}
+						service["environment"] = map[string]string{"OTEL_EXPORTER_OTLP_ENDPOINT": otelCollectorEndpoint}
 					}
 				}
 			} else {
