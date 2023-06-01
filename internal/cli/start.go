@@ -146,12 +146,15 @@ func addExternalNetwork(filePath string) error {
 
 	// global networks
 	composeMap["networks"] = map[string]map[string]any{
-		"default": {
-			"driver": "bridge",
-		},
 		"o11y": {
 			"name":       "o11y",
 			"attachable": true,
+			"ipam": map[string]any{
+				"driver": "default",
+				"config": []map[string]string{
+					{"subnet": "10.10.46.128/25"},
+				},
+			},
 		},
 	}
 	return writeDockerCompose(filePath, composeMap)
