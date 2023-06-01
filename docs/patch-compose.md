@@ -14,4 +14,5 @@ iw will inject `o11y`network configuration to compose and inject network to ALL 
 By default injected env var will point to http exporters:
 ```yaml
 OTEL_EXPORTER_OTLP_ENDPOINT: otel-collector:4317
+OTEL_EXPORTER_ZIPKIN_ENDPOINT: tempo:9411
 ```
