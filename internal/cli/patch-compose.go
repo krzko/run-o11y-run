@@ -62,7 +62,7 @@ func genPatchComposeCommand() *cli.Command {
 					serviceNetworks, ok := service["networks"].([]any)
 					if ok {
 						if !slices.Contains(serviceNetworks, "o11y") {
-							service["networks"] = append(serviceNetworks, "o11y")
+							service["networks"] = append(serviceNetworks, "o11y", "default")
 						}
 					} else {
 						service["networks"] = []string{"o11y", "default"}
@@ -83,7 +83,7 @@ func genPatchComposeCommand() *cli.Command {
 			} else {
 				return fmt.Errorf("error during injecting external network to service definition")
 			}
-			fmt.Println("writhing changes to %s", composeFile)
+			fmt.Printf("writhing changes to %s", composeFile)
 			return writeDockerCompose(composeFile, composeMap)
 		},
 	}
