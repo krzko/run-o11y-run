@@ -72,11 +72,16 @@ func genPatchComposeCommand() *cli.Command {
 
 					environments, ok := service["environment"].(map[any]any)
 					const otelCollectorEndpoint = "otel-collector:4317"
+					const zipkinEndpoint = "tempo:9411"
 					if ok {
 						environments["OTEL_EXPORTER_OTLP_ENDPOINT"] = otelCollectorEndpoint
+						environments["OTEL_EXPORTER_ZIPKIN_ENDPOINT"] = zipkinEndpoint
 						service["environment"] = environments
 					} else {
-						service["environment"] = map[string]string{"OTEL_EXPORTER_OTLP_ENDPOINT": otelCollectorEndpoint}
+						service["environment"] = map[string]string{
+							"OTEL_EXPORTER_OTLP_ENDPOINT":   otelCollectorEndpoint,
+							"OTEL_EXPORTER_ZIPKIN_ENDPOINT": zipkinEndpoint,
+						}
 					}
 				}
 			} else {
