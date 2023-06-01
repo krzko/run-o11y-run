@@ -61,23 +61,22 @@ func genPatchComposeCommand() *cli.Command {
 					serviceNetworks, ok := service["networks"].([]any)
 					if ok {
 						if !slices.Contains(serviceNetworks, "o11y") {
-							service["networks"] = append(serviceNetworks, "o11y")
+							service["networks"] = append(serviceNetworks, "o11y", "default")
 						}
 					} else {
-						service["networks"] = []string{"o11y"}
+						service["networks"] = []string{"o11y", "default"}
 					}
 
 					environments, ok := service["environment"].(map[any]any)
 					if ok {
 						_, ok = environments["OTEL_EXPORTER_OTLP_ENDPOINT"]
-						if ok {
+						if !ok {
 							environments["OTEL_EXPORTER_OTLP_ENDPOINT"] = "otel-collector"
 							service["environment"] = environments
 						}
 					} else {
 						service["environment"] = map[string]string{"OTEL_EXPORTER_OTLP_ENDPOINT": "otel-collector"}
 					}
-
 				}
 			} else {
 				return fmt.Errorf("error during injecting external network to service definition")
