@@ -59,6 +59,7 @@ func New(version, commit, date string) *cli.App {
 			genPortsCommand(),
 			genStartCommand(),
 			genStopCommand(),
+			genPatchComposeCommand(),
 		},
 		Before: initBanner,
 	}

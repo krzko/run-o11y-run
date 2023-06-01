@@ -93,6 +93,10 @@ The `--yolo` flag can be used with the run-o11y-run command to apply the `:lates
 
 For more details on using the `--external-network` flag, refer to the [External Network](docs/external-network.md) guide.
 
+### patch-customer-compose
+
+if flag `--external-network` has been passed to [start](#start-command), it it possible to patch customer owned docker-file.yaml to enable network bridge between `o11y` and customer stack.
+
 ### Stop Command
 
 The `stop` command is used to gracefully stop the run-o11y-run containers. It ensures a clean shutdown of your observability stack. Here's an example of using the `stop` command:
