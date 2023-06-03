@@ -11,14 +11,14 @@ import (
 // genOpenCommand generates the open command
 func genPatchComposeCommand() *cli.Command {
 	return &cli.Command{
-		Name:    "patch-compose",
-		Usage:   "Patch customer owner docker-compose with o11y network setup",
+		Name:    "patch",
+		Usage:   "patch your Docker Compose file to the o11y network",
 		Aliases: []string{"pcm", "patch-compose-manifest"},
 		Flags: []cli.Flag{
 			&cli.PathFlag{
 				Name:     "file",
 				Aliases:  []string{"f"},
-				Usage:    "path to customer owner docker-compose.yaml file",
+				Usage:    "path to to your Docker Compose file",
 				Required: false,
 				Value:    "docker-compose.yaml",
 			},
