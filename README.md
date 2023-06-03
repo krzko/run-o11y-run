@@ -71,7 +71,7 @@ $ run-o11y-run start
  ✔ loki 9 layers [⣿⣿⣿⣿⣿⣿⣿⣿⣿]      0B/0B      Pulled                                                                                                         81.8s
 ```
 
-### Start Command
+### `start` Command
 
 The `start` command allows you to launch run-o11y-run containers and start your observability stack effortlessly. You can customise the behaviour using various flags.
 
@@ -93,7 +93,13 @@ The `--yolo` flag can be used with the run-o11y-run command to apply the `:lates
 
 For more details on using the `--external-network` flag, refer to the [External Network](docs/external-network.md) guide.
 
-### Stop Command
+### `patch` Command
+
+The `patch` command in run-o11y-run provides a convenient way to modify your own `docker-compose.yaml` file, allowing you to establish a network bridge between the `o11y` stack and your customer stack. This feature is particularly useful when you have started the `o11y` stack with the `--external-network` flag, enabling seamless integration with your existing infrastructure.
+
+See the extended [patch](docs/patch.md) documentation for more detailed information.
+
+### `stop` Command
 
 The `stop` command is used to gracefully stop the run-o11y-run containers. It ensures a clean shutdown of your observability stack. Here's an example of using the `stop` command:
 
@@ -101,7 +107,7 @@ The `stop` command is used to gracefully stop the run-o11y-run containers. It en
 run-o11y-run stop
 ```
 
-### Open Command
+### `open` Command
 
 The `open` command allows you to conveniently open various services provided by run-o11y-run in your default web browser. This feature saves you time by quickly launching the relevant service pages.:
 
@@ -113,7 +119,7 @@ Ensure that run-o11y-run is already running before using the open command.
 
 **Note:** Make sure your default web browser is properly configured on your system for this command to work.
 
-### Clean Command
+### `clean` Command
 
 The `clean` command is used to stop and remove run-o11y-run containers, files, and networks. It helps you clean up your environment after using run-o11y-run. Here's an example of using the `clean` command:
 
@@ -121,7 +127,7 @@ The `clean` command is used to stop and remove run-o11y-run containers, files, a
 run-o11y-run clean
 ```
 
-### Ports Command
+### `ports` Command
 
 The `ports` command allows you to list the available ports used by the application. It provides a convenient way to check which ports are used by various services within the observability stack.
 

@@ -45,6 +45,8 @@ services:
 
 By connecting your customer-managed `docker-compose` setup with `run-o11y-run` assets through the `o11y` network, you establish communication between your applications and the observability components provided by `run-o11y-run`.
 
+> Note: run-o11y-run provides [pcm](./patch-compose.md) command which automates patching customer owned docker-compose with some predefined setup.
+
 ## Network flow
 
 Here's a visual representation of the network flow:

@@ -146,9 +146,6 @@ func addExternalNetwork(filePath string) error {
 
 	// global networks
 	composeMap["networks"] = map[string]map[string]any{
-		"default": {
-			"driver": "bridge",
-		},
 		"o11y": {
 			"name":       "o11y",
 			"attachable": true,
