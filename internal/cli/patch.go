@@ -13,7 +13,7 @@ func genPatchComposeCommand() *cli.Command {
 	return &cli.Command{
 		Name:    "patch",
 		Usage:   "patch your Docker Compose file to the o11y network",
-		Aliases: []string{"pcm", "patch-compose-manifest"},
+		Aliases: []string{"pc", "patch-compose"},
 		Flags: []cli.Flag{
 			&cli.PathFlag{
 				Name:     "file",
