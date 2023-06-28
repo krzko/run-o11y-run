@@ -3,7 +3,7 @@ version: "3.8"
 services:
 
   grafana:
-    image: grafana/grafana:9.4.3
+    image: grafana/grafana:10.0.1
     volumes:
       - ../shared/grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
       # - ../shared/pyroscope/grafana-provisioning:/etc/grafana/provisioning
@@ -13,7 +13,7 @@ services:
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
       - GF_AUTH_DISABLE_LOGIN_FORM=true
       # https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/feature-toggles/
-      - GF_FEATURE_TOGGLES_ENABLE=traceqlEditor,traceToMetrics,publicDashboards,showTraceId,pyroscopeFlameGraph
+      - GF_FEATURE_TOGGLES_ENABLE=traceqlEditor,traceToMetrics,publicDashboards,showTraceId,pyroscopeFlameGraph,correlations
       # - GF_INSTALL_PLUGINS=pyroscope-datasource,pyroscope-panel
       - NO_PROXY=grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo
     ports:
@@ -64,7 +64,7 @@ services:
       retries: 5
 
   otel-collector:
-    image: otel/opentelemetry-collector-contrib:0.75.0
+    image: otel/opentelemetry-collector-contrib:0.80.0
     command: [ "--config=/etc/otel-collector.yaml" ]
     volumes:
       - ../shared/otel-collector.yaml:/etc/otel-collector.yaml
@@ -82,7 +82,7 @@ services:
       - tempo
 
   prometheus:
-    image: prom/prometheus:v2.43.1
+    image: prom/prometheus:v2.45.0
     command:
       - --config.file=/etc/prometheus.yaml
       - --web.enable-remote-write-receiver
