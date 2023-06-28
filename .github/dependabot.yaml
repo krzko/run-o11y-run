@@ -1,22 +1,87 @@
 version: 2
 updates:
-  - package-ecosystem: "gomod"
-    directory: "/"
+  - package-ecosystem: 'docker'
+    directory: '/dockerfiles/grafana'
     schedule:
-      interval: "daily"
-      time: "08:00"
-    labels:
-      - "dependencies"
-    commit-message:
-      prefix: "feat"
-      include: "scope"
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: "daily"
-      time: "08:00"
+      interval: 'weekly'
     labels:
       - "dependencies"
     commit-message:
       prefix: "chore"
       include: "scope"
+  - package-ecosystem: 'docker'
+    directory: '/dockerfiles/loki'
+    schedule:
+      interval: 'weekly'
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+  - package-ecosystem: 'docker'
+    directory: '/dockerfiles/minio'
+    schedule:
+      interval: 'weekly'
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+  - package-ecosystem: 'docker'
+    directory: '/dockerfiles/otel-collector'
+    schedule:
+      interval: 'weekly'
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+  - package-ecosystem: 'docker'
+    directory: '/dockerfiles/prometheus'
+    schedule:
+      interval: 'weekly'
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+  - package-ecosystem: 'docker'
+    directory: '/dockerfiles/pyroscope'
+    schedule:
+      interval: 'weekly'
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+  - package-ecosystem: 'docker'
+    directory: '/dockerfiles/tempo'
+    schedule:
+      interval: 'weekly'
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: 'weekly'
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+
+  - package-ecosystem: "gomod"
+    directory: "/"
+    schedule:
+      interval: 'weekly'
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "feat"
+      include: "scope"
+
+
