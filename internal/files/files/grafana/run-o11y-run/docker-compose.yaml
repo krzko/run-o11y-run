@@ -3,7 +3,7 @@ version: "3.8"
 services:
 
   grafana:
-    image: grafana/grafana:10.0.1
+    image: grafana/grafana:10.0.2
     volumes:
       - ../shared/grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
       # - ../shared/pyroscope/grafana-provisioning:/etc/grafana/provisioning
@@ -64,7 +64,7 @@ services:
       retries: 5
 
   otel-collector:
-    image: otel/opentelemetry-collector-contrib:0.80.0
+    image: otel/opentelemetry-collector-contrib:0.81.0
     command: [ "--config=/etc/otel-collector.yaml" ]
     volumes:
       - ../shared/otel-collector.yaml:/etc/otel-collector.yaml
