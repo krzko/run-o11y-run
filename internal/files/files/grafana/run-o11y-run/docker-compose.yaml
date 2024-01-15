@@ -3,7 +3,7 @@ version: "3.8"
 services:
 
   grafana:
-    image: grafana/grafana:10.1.2
+    image: grafana/grafana:10.2.3
     volumes:
       - ../shared/grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
       # - ../shared/pyroscope/grafana-provisioning:/etc/grafana/provisioning
@@ -20,7 +20,7 @@ services:
       - "3000:3000"
 
   loki:
-    image: grafana/loki:2.8.5
+    image: grafana/loki:2.8.7
     command: "-config.file=/etc/loki/local-config.yaml"
     environment:
       - NO_PROXY=grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo
@@ -64,7 +64,7 @@ services:
       retries: 5
 
   otel-collector:
-    image: otel/opentelemetry-collector-contrib:0.85.0
+    image: otel/opentelemetry-collector-contrib:0.92.0
     command: [ "--config=/etc/otel-collector.yaml" ]
     volumes:
       - ../shared/otel-collector.yaml:/etc/otel-collector.yaml
@@ -82,7 +82,7 @@ services:
       - tempo
 
   prometheus:
-    image: prom/prometheus:v2.47.0
+    image: prom/prometheus:v2.48.1
     command:
       - --config.file=/etc/prometheus.yaml
       - --web.enable-remote-write-receiver
