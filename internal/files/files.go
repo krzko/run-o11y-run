@@ -17,6 +17,7 @@ type ServicesConfig struct {
 	LocalLogFiles bool   // follow local log files
 	LogFilePath   string // follow specified log file
 	LogFiles      bool   // true if LocalLogFiles or LogFilePath
+	Debug         bool   // enable debug mode in tools
 }
 
 // ExtractFiles extracts the files from the embedded filesystem to the target directory

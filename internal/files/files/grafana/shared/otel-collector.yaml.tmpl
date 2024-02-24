@@ -59,3 +59,8 @@ service:
     traces:
       receivers: [otlp]
       exporters: [otlp]
+{{- if .Debug }}
+    telemetry:
+      logs:
+        level: "debug"
+{{- end }}

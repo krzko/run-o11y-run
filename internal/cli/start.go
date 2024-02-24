@@ -70,6 +70,7 @@ func genStartCommand() *cli.Command {
 				LocalLogFiles: c.Bool("local-log-files"),
 				LogFilePath:   c.String("follow-log-file"),
 				LogFiles:      (c.Bool("local-log-files") || c.String("follow-log-file") != ""),
+				Debug:         c.Bool("debug"),
 			}
 			err := files.ExtractFiles(targetDir, svcConfig)
 			if err != nil {
