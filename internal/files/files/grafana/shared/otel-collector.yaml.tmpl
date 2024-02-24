@@ -1,8 +1,10 @@
 receivers:
   filelog:
+    {{- if .LocalLogFiles }}
     include:
       - /app/*.log
       - /var/log/*.log
+    {{- end }}
     include_file_name: true
     include_file_path: true
   otlp:
@@ -39,7 +41,11 @@ exporters:
 service:
   pipelines:
     logs:
+    {{- if .LocalLogFiles }}
       receivers: [filelog, otlp, syslog]
+    {{- else }}
+      receivers: [otlp, syslog]
+    {{- end }}
       processors: [batch]
       exporters: [loki]
     metrics:
