@@ -14,11 +14,13 @@ import (
 var files embed.FS
 
 type ServicesConfig struct {
-	LocalLogFiles bool
+	LocalLogFiles bool   // follow local log files
+	LogFilePath   string // follow specified log file
+	LogFiles      bool   // true if LocalLogFiles or LogFilePath
 }
 
 // ExtractFiles extracts the files from the embedded filesystem to the target directory
-func ExtractFiles(targetDir string) error {
+func ExtractFiles(targetDir string, svcConfig ServicesConfig) error {
 	err := os.MkdirAll(targetDir, os.ModePerm)
 	if err != nil {
 		return err
@@ -38,13 +40,12 @@ func ExtractFiles(targetDir string) error {
 			return err
 		}
 		if filepath.Ext(path) == ".tmpl" {
-			servicesConfig := ServicesConfig{LocalLogFiles: false}
 			serviceTemplate, err := template.New("serviceTemplateConfigFile").Parse(string(data))
 			if err != nil {
 				return err
 			}
 			var hydratedContent bytes.Buffer
-			err = serviceTemplate.Execute(&hydratedContent, servicesConfig)
+			err = serviceTemplate.Execute(&hydratedContent, svcConfig)
 			if err != nil {
 				return err
 			}

@@ -46,6 +46,15 @@ func genStartCommand() *cli.Command {
 				Usage: "apply the :latest tag to all images. Caution: This may result in breaking changes to the setup",
 				Value: false,
 			},
+			&cli.BoolFlag{
+				Name:  "local-log-files",
+				Usage: "include all local log files in the collector",
+				Value: false,
+			},
+			&cli.StringFlag{
+				Name:  "follow-log-file",
+				Usage: "regex of log files to track in the collector",
+			},
 		},
 		Action: func(c *cli.Context) error {
 			fmt.Println("✨ Starting...")
@@ -57,7 +66,12 @@ func genStartCommand() *cli.Command {
 
 			homeDir := getHomeDir()
 			targetDir := filepath.Join(homeDir, ".run-o11y-run")
-			err := files.ExtractFiles(targetDir)
+			svcConfig := files.ServicesConfig{
+				LocalLogFiles: c.Bool("local-log-files"),
+				LogFilePath:   c.String("follow-log-file"),
+				LogFiles:      (c.Bool("local-log-files") || c.String("follow-log-file") != ""),
+			}
+			err := files.ExtractFiles(targetDir, svcConfig)
 			if err != nil {
 				fmt.Println("Error extracting files:", err)
 				return err

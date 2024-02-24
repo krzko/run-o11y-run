@@ -1,9 +1,14 @@
 receivers:
   filelog:
-    {{- if .LocalLogFiles }}
+    {{- if .LogFiles }}
     include:
+      {{- if .LocalLogFiles }}
       - /app/*.log
       - /var/log/*.log
+      {{- end }}
+      {{- if .LogFilePath }}
+      - {{ .LogFilePath }}
+      {{- end }}
     {{- end }}
     include_file_name: true
     include_file_path: true
@@ -41,7 +46,7 @@ exporters:
 service:
   pipelines:
     logs:
-    {{- if .LocalLogFiles }}
+    {{- if .LogFiles }}
       receivers: [filelog, otlp, syslog]
     {{- else }}
       receivers: [otlp, syslog]
