@@ -1,4 +1,5 @@
-# .goreleaser.yml
+version: 2
+
 before:
   hooks:
     - go mod tidy
@@ -29,9 +30,6 @@ archives:
 checksum:
   name_template: checksums.txt
 
-snapshot:
-  name_template: "{{ incpatch .Version }}-next"
-
 changelog:
   sort: asc
   filters:
@@ -43,7 +41,7 @@ changelog:
 
 brews:
   - name: run-o11y-run
-    tap:
+    repository:
       owner: 'krzko'
       name: 'homebrew-tap'
     homepage: https://github.com/krzko/run-o11y-run
