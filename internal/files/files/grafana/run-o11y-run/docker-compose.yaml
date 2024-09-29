@@ -1,9 +1,8 @@
-version: "3.8"
-
 services:
 
   grafana:
-    image: grafana/grafana:10.4.0
+    image: grafana/grafana:11.2.0
+    container_name: grafana
     volumes:
       - ../shared/grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
       # - ../shared/pyroscope/grafana-provisioning:/etc/grafana/provisioning
@@ -20,7 +19,8 @@ services:
       - "3000:3000"
 
   loki:
-    image: grafana/loki:2.9.5
+    image: grafana/loki:3.2.0
+    container_name: loki
     command: "-config.file=/etc/loki/local-config.yaml"
     environment:
       - NO_PROXY=grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo
@@ -39,7 +39,8 @@ services:
       retries: 5
 
   minio:
-    image: minio/minio:RELEASE.2023-05-18T00-05-36Z
+    image: minio/minio:RELEASE.2024-09-22T00-33-43Z
+    container_name: minio
     entrypoint:
       - sh
       - -euc
@@ -65,6 +66,7 @@ services:
 
   otel-collector:
     image: otel/opentelemetry-collector-contrib:0.96.0
+    container_name: otel-collector
     command: [ "--config=/etc/otel-collector.yaml" ]
     volumes:
       - ../shared/otel-collector.yaml:/etc/otel-collector.yaml
@@ -82,7 +84,8 @@ services:
       - tempo
 
   prometheus:
-    image: prom/prometheus:v2.50.1
+    image: prom/prometheus:v2.54.1
+    container_name: prometheus
     command:
       - --config.file=/etc/prometheus.yaml
       - --web.enable-remote-write-receiver
@@ -96,6 +99,7 @@ services:
 
   pyroscope:
     image: pyroscope/pyroscope:0.37.2
+    container_name: pyroscope
     ports:
       - "4040:4040"
     command:
@@ -106,7 +110,8 @@ services:
       - PYROSCOPE_WAIT_AFTER_STOP=true
 
   tempo:
-    image: grafana/tempo:main-5e0870a
+    image: grafana/tempo:2.6.0
+    container_name: tempo
     command: [ "-config.file=/etc/tempo.yaml" ]
     volumes:
       - ../shared/tempo.yaml:/etc/tempo.yaml

@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"context"
 	"fmt"
 	"math/rand"
 	"os"
@@ -95,58 +96,50 @@ func runDockerCompose(dir, subcommand string, flags ...string) error {
 	args := []string{"compose", subcommand}
 	args = append(args, flags...)
 
-	cmd := exec.Command("docker", args...)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	cmd := exec.CommandContext(ctx, "docker", args...)
 	cmd.Dir = dir
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
-	err := cmd.Start()
-	if err != nil {
-		return fmt.Errorf("docker compose %s failed: %w", subcommand, err)
+	if err := cmd.Start(); err != nil {
+		return fmt.Errorf("docker compose %s failed to start: %w", subcommand, err)
 	}
+
 	if slices.Contains(args, "--detach") {
 		fmt.Println("🚀 Started in detached mode")
 		return nil
 	}
-	if subcommand == "down" {
-		err = cmd.Wait()
+
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
+
+	done := make(chan error, 1)
+	go func() {
+		done <- cmd.Wait()
+	}()
+
+	select {
+	case <-sigChan:
+		fmt.Printf("\nReceived interrupt signal, stopping Docker %s...\n", subcommand)
+		cancel()
+
+		// Wait for graceful shutdown with a timeout
+		select {
+		case <-time.After(10 * time.Second):
+			fmt.Printf("Forcefully stopping Docker %s...\n", subcommand)
+			_ = cmd.Process.Kill()
+		case <-done:
+			fmt.Printf("Docker %s stopped gracefully.\n", subcommand)
+		}
+
+		return nil
+	case err := <-done:
 		if err != nil {
 			return fmt.Errorf("docker compose %s failed: %w", subcommand, err)
 		}
-	} else {
-		signalChan := make(chan os.Signal, 1)
-		signal.Notify(signalChan, os.Interrupt, syscall.SIGTERM)
-
-		done := make(chan error, 1)
-		go func() {
-			done <- cmd.Wait()
-		}()
-
-		select {
-		case <-signalChan:
-			fmt.Printf("Received interrupt signal, stopping Docker %s...\n", subcommand)
-			_ = cmd.Process.Signal(os.Interrupt)
-
-			select {
-			case <-signalChan:
-				fmt.Printf("Forcefully stopping Docker %s...\n", subcommand)
-				_ = cmd.Process.Kill()
-				os.Exit(1) // Exit with a status code of 1
-			case <-done:
-				os.Exit(0) // Exit with a status code of 0
-			}
-		case err := <-done:
-			if err != nil {
-				os.Exit(1) // Exit with a status code of 1 upon failure
-			}
-		}
-
-		err = <-done
-		if err != nil {
-			os.Exit(1) // Exit with a status code of 1 upon failure
-		}
-
+		return nil
 	}
-
-	return nil
 }
