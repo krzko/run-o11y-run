@@ -65,7 +65,7 @@ services:
       retries: 5
 
   otel-collector:
-    image: otel/opentelemetry-collector-contrib:0.110.0
+    image: otel/opentelemetry-collector-contrib:0.111.0
     container_name: otel-collector
     command: [ "--config=/etc/otel-collector.yaml" ]
     volumes:
@@ -117,8 +117,6 @@ services:
       - ../shared/tempo.yaml:/etc/tempo.yaml
       - ./tempo-data:/tmp/tempo
     ports:
-      # - "4317:4317"   # otlp grpc
-      # - "4318:4318"   # otlp http
       - "14268:14268" # jaeger ingest
       - "3200:3200"   # tempo
       - "9095:9095"   # tempo grpc
