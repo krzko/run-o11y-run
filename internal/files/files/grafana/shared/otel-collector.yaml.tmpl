@@ -15,10 +15,17 @@ receivers:
   otlp:
     protocols:
       grpc:
+        endpoint: 0.0.0.0:4317
       http:
+        endpoint: 0.0.0.0:4318
+        cors:
+          allowed_origins:
+            - "*"
+          allowed_headers:
+            - "*"
   syslog:
     tcp:
-      listen_address: "0.0.0.0:8094"
+      listen_address: 0.0.0.0:8094
     protocol: rfc3164
     location: UTC
     operators:
