@@ -1,7 +1,7 @@
 services:
 
   grafana:
-    image: grafana/grafana:11.2.0
+    image: grafana/grafana:11.2.2
     container_name: grafana
     volumes:
       - ../shared/grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
@@ -19,7 +19,7 @@ services:
       - "3000:3000"
 
   loki:
-    image: grafana/loki:3.2.0
+    image: grafana/loki:3.2.1
     container_name: loki
     command: "-config.file=/etc/loki/local-config.yaml"
     environment:
@@ -110,7 +110,7 @@ services:
       - PYROSCOPE_WAIT_AFTER_STOP=true
 
   tempo:
-    image: grafana/tempo:2.6.0
+    image: grafana/tempo:2.6.1
     container_name: tempo
     command: [ "-config.file=/etc/tempo.yaml" ]
     volumes:
