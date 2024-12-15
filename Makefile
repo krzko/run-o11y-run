@@ -3,7 +3,7 @@
 OUTPUT:=bin
 EXECUTABLE:=run-o11y-run
 
-VERSION:=v0.13.3
+VERSION:=v0.14.0
 COMMIT=$(shell git describe --tags --always --long)
 NOW=$(shell date +'%Y%m%d')
 
