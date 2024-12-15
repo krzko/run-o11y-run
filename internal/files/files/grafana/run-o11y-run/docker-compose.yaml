@@ -1,7 +1,7 @@
 services:
 
   grafana:
-    image: grafana/grafana:11.2.2
+    image: grafana/grafana:11.4.0
     container_name: grafana
     volumes:
       - ../shared/grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
@@ -19,7 +19,7 @@ services:
       - "3000:3000"
 
   loki:
-    image: grafana/loki:3.2.1
+    image: grafana/loki:3.3.1
     container_name: loki
     command: "-config.file=/etc/loki/local-config.yaml"
     environment:
@@ -65,7 +65,7 @@ services:
       retries: 5
 
   otel-collector:
-    image: otel/opentelemetry-collector-contrib:0.111.0
+    image: otel/opentelemetry-collector-contrib:0.115.1
     container_name: otel-collector
     command: [ "--config=/etc/otel-collector.yaml" ]
     volumes:
@@ -76,7 +76,9 @@ services:
       - "4317:4317"   # otlp grpc
       - "4318:4318"   # otlp http
       - "8094:8094"   # syslog
+      - "18888:18888"   # prometheus
     environment:
+      - DEBUG=true
       - NO_PROXY=grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo
     depends_on:
       - loki
@@ -84,7 +86,7 @@ services:
       - tempo
 
   prometheus:
-    image: prom/prometheus:v2.54.1
+    image: prom/prometheus:v3.0.1
     container_name: prometheus
     command:
       - --config.file=/etc/prometheus.yaml
