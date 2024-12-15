@@ -1,2 +1,2 @@
 # dependabot will update this file when base image is updated
-FROM prom/prometheus:v2.54.1
+FROM prom/prometheus:v3.0.1
