@@ -6,3 +6,6 @@ providers:
     updateIntervalSeconds: 5
     options:
       path: /etc/grafana/provisioning/dashboards
+
+analytics:
+  reporting_enabled: false

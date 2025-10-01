@@ -32,3 +32,11 @@ ruler:
   storage:
     s3:
       bucketnames: loki-ruler
+
+limits_config:
+  allow_structured_metadata: true
+
+storage_config:
+  filesystem:
+    directory: /loki/chunks
+
