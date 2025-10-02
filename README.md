@@ -24,6 +24,8 @@ The underlying observability stack is built on [Grafana](https://grafana.com/) p
 
 `run-o11y-run` depends on the latest version of [Docker Desktop](https://www.docker.com/products/docker-desktop/), which includes the `docker compose` command.
 
+In order to use the local alpaca proxy, you will also need to have the ANZ CA Bundle, that can be extracted with: `security find-certificate -c "ANZ" -p -a >> ~/.ssl/anz_ca_bundle.pem`
+
 ## Quick Start
 
 ### Install
