@@ -1,5 +1,4 @@
 services:
-
   grafana:
     image: grafana/grafana:12.2.0
     container_name: grafana
@@ -7,6 +6,7 @@ services:
       - ../shared/grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
       # - ../shared/pyroscope/grafana-provisioning:/etc/grafana/provisioning
       # - ../shared/pyroscope-dashboard.json:/etc/grafana/provisioning/dashboards/dashboard.json
+      - ${HOME}/.ssl/anz_ca_bundle.pem:/etc/ssl/certs/anz_ca_bundle.pem:ro
     environment:
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
@@ -15,7 +15,12 @@ services:
       # https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/feature-toggles/
       - GF_FEATURE_TOGGLES_ENABLE=traceqlEditor,traceToMetrics,publicDashboards,showTraceId,pyroscopeFlameGraph,correlations
       # - GF_INSTALL_PLUGINS=pyroscope-datasource,pyroscope-panel
-      - NO_PROXY=grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo
+      - HTTP_PROXY=http://host.docker.internal:3128
+      - HTTPS_PROXY=http://host.docker.internal:3128
+      - NO_PROXY=localhost,127.0.0.1,host.docker.internal,grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo,172.18.0.0/16
+      - http_proxy=http://host.docker.internal:3128
+      - https_proxy=http://host.docker.internal:3128
+      - no_proxy=localhost,127.0.0.1,host.docker.internal,grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo,172.18.0.0/16
     ports:
       - "3000:3000"
 
@@ -24,12 +29,18 @@ services:
     container_name: loki
     command: "-config.file=/etc/loki/local-config.yaml"
     environment:
-      - NO_PROXY=grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo
+      - HTTP_PROXY=http://host.docker.internal:3128
+      - HTTPS_PROXY=http://host.docker.internal:3128
+      - NO_PROXY=localhost,127.0.0.1,host.docker.internal,grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo,172.18.0.0/16
+      - http_proxy=http://host.docker.internal:3128
+      - https_proxy=http://host.docker.internal:3128
+      - no_proxy=localhost,127.0.0.1,host.docker.internal,grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo,172.18.0.0/16
     ports:
       - "3100:3100"
       - 7946
       - 9095
     volumes:
+      - ${HOME}/.ssl/anz_ca_bundle.pem:/etc/ssl/certs/anz_ca_bundle.pem:ro
       - ../shared/loki.yaml:/etc/loki/local-config.yaml
       - ./loki-data:/loki
     depends_on:
@@ -55,10 +66,16 @@ services:
       - MINIO_ROOT_PASSWORD=supersecret
       - MINIO_PROMETHEUS_AUTH_TYPE=public
       - MINIO_UPDATE=off
-      - NO_PROXY=grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo
+      - HTTP_PROXY=http://host.docker.internal:3128
+      - HTTPS_PROXY=http://host.docker.internal:3128
+      - NO_PROXY=localhost,127.0.0.1,host.docker.internal,grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo,172.18.0.0/16
+      - http_proxy=http://host.docker.internal:3128
+      - https_proxy=http://host.docker.internal:3128
+      - no_proxy=localhost,127.0.0.1,host.docker.internal,grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo,172.18.0.0/16
     ports:
       - 9000
     volumes:
+      - ${HOME}/.ssl/anz_ca_bundle.pem:/etc/ssl/certs/anz_ca_bundle.pem:ro
       - ./minio-data:/data
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
@@ -71,6 +88,7 @@ services:
     container_name: otel-collector
     command: [ "--config=/etc/otel-collector.yaml" ]
     volumes:
+      - ${HOME}/.ssl/anz_ca_bundle.pem:/etc/ssl/certs/anz_ca_bundle.pem:ro
       - ../shared/otel-collector.yaml:/etc/otel-collector.yaml
       - /var/log:/var/log
       - "../../../../:/app:r"
@@ -81,7 +99,12 @@ services:
       - "18888:18888"   # prometheus
     environment:
       - DEBUG=true
-      - NO_PROXY=grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo
+      - HTTP_PROXY=http://host.docker.internal:3128
+      - HTTPS_PROXY=http://host.docker.internal:3128
+      - NO_PROXY=localhost,127.0.0.1,host.docker.internal,grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo,172.18.0.0/16
+      - http_proxy=http://host.docker.internal:3128
+      - https_proxy=http://host.docker.internal:3128
+      - no_proxy=localhost,127.0.0.1,host.docker.internal,grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo,172.18.0.0/16
     depends_on:
       - loki
       - prometheus
@@ -95,11 +118,17 @@ services:
       - --web.enable-remote-write-receiver
       - --enable-feature=exemplar-storage
     volumes:
+      - ${HOME}/.ssl/anz_ca_bundle.pem:/etc/ssl/certs/anz_ca_bundle.pem:ro
       - ../shared/prometheus.yaml:/etc/prometheus.yaml
     ports:
       - "9090:9090"
     environment:
-      - NO_PROXY=grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo
+      - HTTP_PROXY=http://host.docker.internal:3128
+      - HTTPS_PROXY=http://host.docker.internal:3128
+      - NO_PROXY=localhost,127.0.0.1,host.docker.internal,grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo,172.18.0.0/16
+      - http_proxy=http://host.docker.internal:3128
+      - https_proxy=http://host.docker.internal:3128
+      - no_proxy=localhost,127.0.0.1,host.docker.internal,grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo,172.18.0.0/16
 
   pyroscope:
     image: pyroscope/pyroscope:0.37.2
@@ -109,15 +138,23 @@ services:
     command:
       - server
     environment:
-      - NO_PROXY=grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo
       - PYROSCOPE_LOG_LEVEL=info
       - PYROSCOPE_WAIT_AFTER_STOP=true
+      - HTTP_PROXY=http://host.docker.internal:3128
+      - HTTPS_PROXY=http://host.docker.internal:3128
+      - NO_PROXY=localhost,127.0.0.1,host.docker.internal,grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo,172.18.0.0/16
+      - http_proxy=http://host.docker.internal:3128
+      - https_proxy=http://host.docker.internal:3128
+      - no_proxy=localhost,127.0.0.1,host.docker.internal,grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo,172.18.0.0/16
+    volumes:
+      - ${HOME}/.ssl/anz_ca_bundle.pem:/etc/ssl/certs/anz_ca_bundle.pem:ro
 
   tempo:
-    image: grafana/tempo:2.6.1
+    image: grafana/tempo:2.8.2
     container_name: tempo
     command: [ "-config.file=/etc/tempo.yaml" ]
     volumes:
+      - ${HOME}/.ssl/anz_ca_bundle.pem:/etc/ssl/certs/anz_ca_bundle.pem:ro
       - ../shared/tempo.yaml:/etc/tempo.yaml
       - ./tempo-data:/tmp/tempo
     ports:
@@ -126,4 +163,9 @@ services:
       - "9095:9095"   # tempo grpc
       - "9411:9411"   # zipkin
     environment:
-      - NO_PROXY=grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo
+      - HTTP_PROXY=http://host.docker.internal:3128
+      - HTTPS_PROXY=http://host.docker.internal:3128
+      - NO_PROXY=localhost,127.0.0.1,host.docker.internal,grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo,172.18.0.0/16
+      - http_proxy=http://host.docker.internal:3128
+      - https_proxy=http://host.docker.internal:3128
+      - no_proxy=localhost,127.0.0.1,host.docker.internal,grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo,172.18.0.0/16
