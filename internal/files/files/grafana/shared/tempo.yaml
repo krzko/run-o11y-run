@@ -1,21 +1,31 @@
 server:
+  http_listen_address: 0.0.0.0
   http_listen_port: 3200
+  grpc_listen_port: 9095
 
 distributor:
   receivers:                           # this configuration will listen on all ports and protocols that tempo is capable of.
-    jaeger:                            # the receives all come from the OpenTelemetry collector.  more configuration information can
-      protocols:                       # be found there: https://github.com/open-telemetry/opentelemetry-collector/tree/main/receiver
+    jaeger:                            # the receivers all come from the OpenTelemetry collector. more configuration information can
+      protocols:                       # be found here: https://github.com/open-telemetry/opentelemetry-collector/tree/main/receiver
         thrift_http:                   #
+          endpoint: "0.0.0.0:14268"    #
         grpc:                          # for a production deployment you should only enable the receivers you need!
+          endpoint: "0.0.0.0:14250"
         thrift_binary:
+          endpoint: "0.0.0.0:6832"
         thrift_compact:
+          endpoint: "0.0.0.0:6831"
     zipkin:
+      endpoint: "0.0.0.0:9411"
     otlp:
       protocols:
         http:
+          endpoint: "0.0.0.0:4318"
         grpc:
+          endpoint: "0.0.0.0:4317"
     opencensus:
-
+      endpoint: "0.0.0.0:55678"
+  
 ingester:
   max_block_duration: 5m               # cut the headblock when this much time passes. this is being set for demo purposes and should probably be left alone normally
 
@@ -28,11 +38,17 @@ metrics_generator:
     external_labels:
       source: tempo
       cluster: docker-compose
+  processor:
+    local_blocks:
+      flush_to_storage: true
+      filter_server_spans: false
   storage:
     path: /tmp/tempo/generator/wal
     remote_write:
       - url: http://prometheus:9090/api/v1/write
         send_exemplars: true
+  traces_storage:
+    path: /tmp/tempo/generator/traces
 
 storage:
   trace:
@@ -43,7 +59,12 @@ storage:
       path: /tmp/tempo/blocks
 
 overrides:
-  metrics_generator_processors: [service-graphs, span-metrics] # enables metrics generator
+  defaults:
+    metrics_generator:
+      processors:
+        - service-graphs
+        - span-metrics
+        - local-blocks
 
 usage_report:
   reporting_enabled: false
