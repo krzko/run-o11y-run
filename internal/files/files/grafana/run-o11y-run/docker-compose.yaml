@@ -15,7 +15,8 @@ services:
       # https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/feature-toggles/
       - GF_FEATURE_TOGGLES_ENABLE=traceqlEditor,traceToMetrics,publicDashboards,showTraceId,pyroscopeFlameGraph,correlations
       # - GF_INSTALL_PLUGINS=pyroscope-datasource,pyroscope-panel
-      - NO_PROXY=grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo
+      - NO_PROXY=localhost,127.0.0.1,host.docker.internal,grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo,172.18.0.0/16
+      - no_proxy=localhost,127.0.0.1,host.docker.internal,grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo,172.18.0.0/16
     ports:
       - "3000:3000"
 
@@ -24,7 +25,8 @@ services:
     container_name: loki
     command: "-config.file=/etc/loki/local-config.yaml"
     environment:
-      - NO_PROXY=grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo
+      - NO_PROXY=localhost,127.0.0.1,host.docker.internal,grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo,172.18.0.0/16
+      - no_proxy=localhost,127.0.0.1,host.docker.internal,grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo,172.18.0.0/16
     ports:
       - "3100:3100"
       - 7946
@@ -55,7 +57,8 @@ services:
       - MINIO_ROOT_PASSWORD=supersecret
       - MINIO_PROMETHEUS_AUTH_TYPE=public
       - MINIO_UPDATE=off
-      - NO_PROXY=grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo
+      - NO_PROXY=localhost,127.0.0.1,host.docker.internal,grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo,172.18.0.0/16
+      - no_proxy=localhost,127.0.0.1,host.docker.internal,grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo,172.18.0.0/16
     ports:
       - 9000
     volumes:
@@ -81,7 +84,8 @@ services:
       - "18888:18888"   # prometheus
     environment:
       - DEBUG=true
-      - NO_PROXY=grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo
+      - NO_PROXY=localhost,127.0.0.1,host.docker.internal,grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo,172.18.0.0/16
+      - no_proxy=localhost,127.0.0.1,host.docker.internal,grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo,172.18.0.0/16
     depends_on:
       - loki
       - prometheus
@@ -99,7 +103,8 @@ services:
     ports:
       - "9090:9090"
     environment:
-      - NO_PROXY=grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo
+      - NO_PROXY=localhost,127.0.0.1,host.docker.internal,grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo,172.18.0.0/16
+      - no_proxy=localhost,127.0.0.1,host.docker.internal,grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo,172.18.0.0/16
 
   pyroscope:
     image: pyroscope/pyroscope:0.37.2
@@ -109,12 +114,13 @@ services:
     command:
       - server
     environment:
-      - NO_PROXY=grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo
+      - NO_PROXY=localhost,127.0.0.1,host.docker.internal,grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo,172.18.0.0/16
+      - no_proxy=localhost,127.0.0.1,host.docker.internal,grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo,172.18.0.0/16
       - PYROSCOPE_LOG_LEVEL=info
       - PYROSCOPE_WAIT_AFTER_STOP=true
 
   tempo:
-    image: grafana/tempo:2.6.1
+    image: grafana/tempo:2.8.2
     container_name: tempo
     command: [ "-config.file=/etc/tempo.yaml" ]
     volumes:
@@ -126,4 +132,5 @@ services:
       - "9095:9095"   # tempo grpc
       - "9411:9411"   # zipkin
     environment:
-      - NO_PROXY=grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo
+      - NO_PROXY=localhost,127.0.0.1,host.docker.internal,grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo,172.18.0.0/16
+      - no_proxy=localhost,127.0.0.1,host.docker.internal,grafana,loki,minio,otel-collector,prometheus,pyroscope,tempo,172.18.0.0/16
